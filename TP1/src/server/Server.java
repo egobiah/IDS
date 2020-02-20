@@ -13,23 +13,28 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server implements Connectable {
-    private int port;
+public class Server implements Connectable, Runnable  {
+
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private BufferedReader in;
     private PrintWriter out;
     private PersonManager manager;
 
-    public Server(int port) throws IOException {
-        this.port = port;
-        this.serverSocket = new ServerSocket(this.port);
+    public Server(ServerSocket s) throws IOException {
+
+        this.serverSocket = s;
         this.manager = new PersonManager();
     }
 
+    public void newConnection() throws IOException {
+
+        this.connect();
+    }
     public void connect() {
         try {
             this.clientSocket = this.serverSocket.accept();
@@ -37,13 +42,26 @@ public class Server implements Connectable {
             this.in = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
             } catch(IOException e){
                 System.out.println("Exception caught when trying to listen on port "
-                        + this.port + " or listening for a connection");
+                        + this.serverSocket.getLocalPort() + " or listening for a connection");
                 System.out.println(e.getMessage());
             }
         System.out.println("Connected");
     }
 
-    public void run() throws IOException, ServerConnectionEnded, ServerConnectionLost {
+    @Override
+    public void run(){
+
+        try {
+            runThread();
+        } catch (ServerConnectionEnded | ServerConnectionLost |IOException serverConnectionEnded) {
+            serverConnectionEnded.printStackTrace();
+            return;
+        }
+
+    }
+
+
+    public void runThread() throws IOException, ServerConnectionEnded, ServerConnectionLost {
         String cli = "";
         List<Integer> args = null;
         List<String> argStrings = null;
@@ -56,6 +74,14 @@ public class Server implements Connectable {
             }
             try {
                 switch (cli) {
+                    case "EXIT":
+                        System.out.println("Exiting the current thread session");
+                        return;
+
+                    case "SHUTDOWN":
+                        System.out.println("Need to shutsdown the system");
+                        return;
+
                     case "PHONE":
                         phone_cmd = (this.get_strings(1)).get(0);
                         switch (phone_cmd){
@@ -182,16 +208,16 @@ public class Server implements Connectable {
     }
 
     private String get_answer() throws ServerConnectionEnded, ServerConnectionLost {
-        String cli;
+        String cli = null;
             try {
                 cli = this.in.readLine();
                 if(cli == null)
                     throw new ServerConnectionEnded("ciao");
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+              //  e.printStackTrace();
                 throw new ServerConnectionLost("snifsnif");
             }
-        System.out.println("anwser : " + cli );
+            System.out.println("anwser : " + cli );
         return cli;
     }
 

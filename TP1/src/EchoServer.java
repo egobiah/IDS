@@ -38,38 +38,30 @@ import java.io.*;
 
 public class EchoServer {
     public static void main(String[] args) throws IOException {
-        
+
         if (args.length != 1) {
             System.err.println("Usage: java EchoServer <port number>");
             System.exit(1);
         }
-        
-        int portNumber = Integer.parseInt(args[0]);
 
-        Server server = new Server(portNumber);
-        server.connect();
-        try {
-            server.run();
-        } catch (ServerConnectionEnded | ServerConnectionLost serverConnectionEnded) {
-            serverConnectionEnded.printStackTrace();
+        int portNumber = Integer.parseInt(args[0]);
+        ServerSocket mainSS = new ServerSocket(portNumber);
+        while(!mainSS.isClosed()) {
+            Runnable runnable = new Server(mainSS);
+            try {
+                ((Server) runnable).newConnection();
+            } catch (Exception e) {
+                System.out.println("No MORE");
+            }
+            Thread t = new Thread(runnable);
+            t.start();
+            System.out.println("New connection there");
         }
-        
-        /*try (
-            ServerSocket serverSocket =
-                new ServerSocket(Integer.parseInt(args[0]));
-            Socket clientSocket = serverSocket.accept();     
-            PrintWriter out =
-                new PrintWriter(clientSocket.getOutputStream(), true);                   
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(clientSocket.getInputStream()));
-        ) {
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) out.println(inputLine);
-            System.out.println("I'm ending...");
-        } catch (IOException e) {
-            System.out.println("Exception caught when trying to listen on port "
-                + portNumber + " or listening for a connection");
-            System.out.println(e.getMessage());
-        }*/
+    System.out.println("System halting");
+
+
+
+
+
     }
 }

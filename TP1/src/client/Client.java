@@ -37,8 +37,13 @@ public class Client  implements Connectable{
         while ((userInput = this.stdIn.readLine()) != null) {
             String[] userInput_split = userInput.split(" ");
             try {
-                if(userInput_split.length == 0) throw  new WrongFormatCli("no cmd found : " + userInput);
+                if(userInput_split.length == 0) throw  new WrongFormatCli("Client no cmd found : " + userInput);
                 switch (userInput_split[0]){
+                    case "EXIT":
+                    case "SHUTDOWN":
+                        this.out.println(userInput_split[0]);
+                        return;
+
                     case "+":
                     case "-":
                     case "/":

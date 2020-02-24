@@ -12,4 +12,7 @@ public interface ChatRoomsSettings {
     public void openChat();
     public void closeChat();
 
+    public void setDescritpion(String s);
+    public String getDescription();
+
 }

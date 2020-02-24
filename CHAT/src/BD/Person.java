@@ -10,13 +10,12 @@ public class Person {
 
     private final Object synch_cmp = new Object();
 
-    Person(String nom, String prenom, String password){
+    public Person(String pseudo, String password){
         synchronized (synch_cmp) {
             id = compteur_id;
             compteur_id++;
         }
-        this.nom = nom;
-        this.prenom = prenom;
+
         this.password = password;
         this.pseudo = pseudo;
     }

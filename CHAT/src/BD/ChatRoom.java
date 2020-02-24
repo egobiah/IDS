@@ -11,19 +11,21 @@ public class ChatRoom implements ChatRoomsRIghts, ChatRoomsSettings, ChatRoomMan
 
     Boolean open;
     Boolean visible;
-    String name;
+    protected String name;
+    protected String description;
 
 
     private static int compteur_chat = 0;
 
 
-    ChatRoom(String name, Person createur){
+    public ChatRoom(String name, String description, Person createur){
         admin = new ArrayList<>();
         modo = new ArrayList<>();
         viewer = new ArrayList<>();
         admin.add(createur);
         viewer.add(createur);
         this.name = name;
+        this.description = description;
         this.visible = true;
         this.open = true;
         ID = compteur_chat;
@@ -31,7 +33,22 @@ public class ChatRoom implements ChatRoomsRIghts, ChatRoomsSettings, ChatRoomMan
 
     }
 
+    @Override
+    public String toString() {
+        return this.name + " : " + this.description;
+    }
+
+    public int getID(){
+        return  ID;
+    }
     // SETTINGS
+
+    public void setDescritpion(String s){
+        this.description = s;
+    }
+    public String getDescription(){
+        return description;
+    }
 
     public Boolean isVisible() {
         return visible;

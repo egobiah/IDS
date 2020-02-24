@@ -1,5 +1,6 @@
+package Hello;
 
-import java.rmi.*; 
+import java.rmi.*;
 import java.rmi.server.*; 
 import java.rmi.registry.*;
 
@@ -11,9 +12,14 @@ public class HelloServer {
 	    HelloImpl h = new HelloImpl ("Hello world !");
 	    Hello h_stub = (Hello) UnicastRemoteObject.exportObject(h, 0);
 
+	    Info_itf_impl i = new Info_itf_impl();
+	    Info_itf i_stub = (Info_itf) UnicastRemoteObject.exportObject(i, 1) ;
+
 	    // Register the remote object in RMI registry with a given identifier
 	    Registry registry= LocateRegistry.getRegistry(); 
 	    registry.bind("HelloService", h_stub);
+	    registry.bind("HelloService2", i_stub);
+
 
 	    System.out.println ("Server ready");
 

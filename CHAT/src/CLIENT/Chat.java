@@ -6,9 +6,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class Chat {
@@ -19,6 +22,7 @@ public class Chat {
     ScrollPane scrollPane;
     Button toAccueil;
     Button send;
+    TextField message;
 
 
     public Chat(ChatRoom chatRoom, Person user){
@@ -35,7 +39,7 @@ public class Chat {
         scrollPane = new ScrollPane();
 
         BorderPane bottomBox = new BorderPane();
-        TextField message = new TextField();
+        message = new TextField();
         send = new Button("Envoyer");
         bottomBox.setCenter(message);
         bottomBox.setRight(send);
@@ -47,12 +51,31 @@ public class Chat {
 
         send.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                System.out.println(message.getText());
-                message.clear();
+               sendMSG();
             }
         });
 
+        message.setOnKeyPressed(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent k)
+            {
+                if (k.getCode().equals(KeyCode.ENTER)){
+                    sendMSG();
+                }
+            }
+        });
+
+
+
     }
+
+    private void sendMSG(){
+        System.out.println(message.getText());
+        chatRoom.getMsg().add(new Message(message.getText(), user));
+        message.clear();
+
+        refreshMSG();
+    };
 
     public Button getToAccueil() {
         return toAccueil;
@@ -62,5 +85,23 @@ public class Chat {
         return scene;
     }
 
+    public void refreshMSG(){
+        BorderPane mainB = new BorderPane();
+        VBox v = new VBox();
 
+        for(Message m : chatRoom.getMsg()){
+           Text t =  new Text(m.toString());
+                   if(m.getOwner().equals(user)){
+                       t.setFill(Color.BLUE);
+
+
+                   }
+            v.getChildren().add(t);
+        }
+
+        scrollPane.setContent(v);
+        scrollPane.setVvalue(1.00);
+
+
+    }
 }

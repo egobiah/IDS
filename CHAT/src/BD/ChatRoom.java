@@ -13,6 +13,7 @@ public class ChatRoom implements ChatRoomsRIghts, ChatRoomsSettings, ChatRoomMan
     Boolean visible;
     protected String name;
     protected String description;
+    ArrayList<Message> msg;
 
 
     private static int compteur_chat = 0;
@@ -30,7 +31,17 @@ public class ChatRoom implements ChatRoomsRIghts, ChatRoomsSettings, ChatRoomMan
         this.open = true;
         ID = compteur_chat;
         compteur_chat++;
+        msg = new ArrayList<>();
+        msg.add(new Message("TEst 1" , new Person("quelqu'un d'autre", "moi")));
+        msg.add(new Message("TEst 2" , createur));
+        msg.add(new Message("TEst 2" , createur));
+        msg.add(new Message("A\nB\nC" , createur));
 
+
+    }
+
+    public ArrayList<Message> getMsg(){
+        return msg;
     }
 
     @Override

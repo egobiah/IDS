@@ -17,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class Accueil {
@@ -48,8 +49,7 @@ public class Accueil {
         this.user = user;
         root = new BorderPane();
         scene = new Scene(root, 400,400);
-        //generateChatRoom();
-        System.out.println(chatRooms);
+
 
 
         tableView = new TableView<ChatRoom>();
@@ -105,18 +105,14 @@ public class Accueil {
         return scene;
     }
 
-    public void generateChatRoom(){
-        chatRooms = new ArrayList<>();
-        chatRooms.add( new ChatRoom("Room 1","JAVA",user));
-        chatRooms.add( new ChatRoom("Room 2","C",user));
-        chatRooms.add( new ChatRoom("Room 3","PHP",user));
-        chatRooms.add( new ChatRoom("Room 4","Python",user));
-        chatRooms.add( new ChatRoom("Room 5","Rust",user));
-        System.out.println(user);
-    }
+
 
     public void refreshTable(){
-        //chatRooms = t.getChatList(user);
+        try {
+            chatRooms = t.getChatList(user);
+        } catch (RemoteException r){
+            r.printStackTrace();;
+        }
         ObservableList<ChatRoom> list = FXCollections.observableArrayList();
             for(int i = 0 ; i < chatRooms.size(); i++){
                 list.add(chatRooms.get(i));

@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class Chat {
     ChatRoom chatRoom;
@@ -77,7 +78,7 @@ public class Chat {
         try {
             //t.test();
             //System.out.println(t.sayHi(user));
-            t.sendMessage(new Message(message.getText(), user));
+            t.sendMessage(chatRoom.getID(),new Message(message.getText(), user));
         } catch (RemoteException r){
 
             System.out.println("Problème lors de l'envoi du message\n" + r);
@@ -102,10 +103,17 @@ public class Chat {
     public void refreshMSG(){
         BorderPane mainB = new BorderPane();
         VBox v = new VBox();
-
-        for(Message m : chatRoom.getMsg()){
+        ArrayList<Message> msgs;
+        try {
+            msgs = t.getMessageofChatRoom(chatRoom.getID());
+        } catch (RemoteException r){
+            r.printStackTrace();
+            System.out.println("Impossible de récupérer les messages de cette salle de chat");
+            return;
+        }
+        for(Message m : msgs){
            Text t =  new Text(m.toString());
-                   if(m.getOwner().equals(user)){
+                   if(m.getOwner().getPseudo().equals(user.getPseudo())){
                        t.setFill(Color.BLUE);
 
 

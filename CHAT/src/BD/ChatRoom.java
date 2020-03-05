@@ -1,8 +1,9 @@
 package BD;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ChatRoom implements ChatRoomsRIghts, ChatRoomsSettings, ChatRoomManager{
+public class ChatRoom implements Serializable, ChatRoomsRIghts, ChatRoomsSettings, ChatRoomManager{
 
     int ID;
     ArrayList<Person> admin;
@@ -183,5 +184,41 @@ public class ChatRoom implements ChatRoomsRIghts, ChatRoomsSettings, ChatRoomMan
                 admin.remove(removed);
             }
         }
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public void setAdmin(ArrayList<Person> admin) {
+        this.admin = admin;
+    }
+
+    public void setModo(ArrayList<Person> modo) {
+        this.modo = modo;
+    }
+
+    public void setViewer(ArrayList<Person> viewer) {
+        this.viewer = viewer;
+    }
+
+    public void setOpen(Boolean open) {
+        this.open = open;
+    }
+
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setMsg(ArrayList<Message> msg) {
+        this.msg = msg;
+    }
+
+    public static void setCompteur_chat(int compteur_chat) {
+        ChatRoom.compteur_chat = compteur_chat;
     }
 }

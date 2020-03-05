@@ -1,20 +1,29 @@
 package SERVER;
 
+import BD.ChatRoom;
 import BD.Message;
 import BD.Person;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class Talk_Implem implements TalkWithClient {
+    ArrayList<ChatRoom> chatRooms;
     public Talk_Implem(){
-
+        generateChatRoom();
     }
 
     @Override
-    public String sendMessage(Message m) throws RemoteException {
+    public String sendMessage(int chatRoomId, Message m) throws RemoteException {
         System.out.println("Recu le message " + m.toString());
-        return m.toString();
+        for(ChatRoom chatRoom : chatRooms){
+            if(chatRoom.getID() == chatRoomId){
+                chatRoom.getMsg().add(m);
+                return m.toString();
+            }
+        }
+        return "Salle de chat ID #" + chatRoomId + "introuvable";
     }
 
     @Override
@@ -27,5 +36,34 @@ public class Talk_Implem implements TalkWithClient {
     public String sayHi(Person p) throws RemoteException {
         System.out.println(p.toString() + "is now on");
         return "Hello : " + p.toString();
+    }
+
+    @Override
+    public Person loggedIn(String pseudo) {
+        return new Person(pseudo, "null");
+    }
+
+    @Override
+    public ArrayList<ChatRoom> getChatList(Person p) throws RemoteException {
+        return chatRooms;
+    }
+
+    public ArrayList<Message> getMessageofChatRoom(int chatRoomId){
+        for(ChatRoom chatRoom : chatRooms){
+            if(chatRoom.getID() == chatRoomId){
+                return chatRoom.getMsg();
+            }
+        }
+        return null;
+    }
+
+    public void generateChatRoom(){
+        Person user = new Person("Admin", "Password");
+        chatRooms = new ArrayList<>();
+      //  chatRooms.add( new ChatRoom("Room 1","JAVA",user));
+       // chatRooms.add( new ChatRoom("Room 2","C",user));
+       // chatRooms.add( new ChatRoom("Room 3","PHP",user));
+       // chatRooms.add( new ChatRoom("Room 4","Python",user));
+        chatRooms.add( new ChatRoom("Room 5","Rust",user));
     }
 }

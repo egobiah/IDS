@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -59,7 +60,11 @@ public class Main extends Application {
     private void setActionButtonConnectionScreen(Stage stage){
             connectionScreen.getButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-             //   user = t.loggedIn(connectionScreen.getPseudo());
+                try {
+                    user = t.loggedIn(connectionScreen.getPseudo());
+                } catch (RemoteException r){
+                    r.printStackTrace();
+                }
                 accueil = new Accueil(user,t);
                 stage.setScene(accueil.getScene());
                 setToConnectionScreenButton(stage);

@@ -3,6 +3,7 @@ package CLIENT;
 import BD.*;
 
 
+import SERVER.TalkWithClient;
 import com.sun.jdi.ByteType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,8 +28,10 @@ public class Accueil {
     Button toConnectionScreen;
     Button toChatRoom;
     Button actualiser;
+    TalkWithClient t;
 
-    public Accueil(Person user){
+    public Accueil(Person user, TalkWithClient t){
+        this.t = t;
         toConnectionScreen = new Button("Retour");
         toChatRoom = new Button("Connection");
         actualiser = new Button("Actualiser");
@@ -45,7 +48,7 @@ public class Accueil {
         this.user = user;
         root = new BorderPane();
         scene = new Scene(root, 400,400);
-        generateChatRoom();
+        //generateChatRoom();
         System.out.println(chatRooms);
 
 
@@ -113,6 +116,7 @@ public class Accueil {
     }
 
     public void refreshTable(){
+        //chatRooms = t.getChatList(user);
         ObservableList<ChatRoom> list = FXCollections.observableArrayList();
             for(int i = 0 ; i < chatRooms.size(); i++){
                 list.add(chatRooms.get(i));

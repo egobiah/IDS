@@ -23,6 +23,7 @@ public class Talk_Implem implements TalkWithClient {
     }
 
     @Override
+
     public String sayHi(Person p) throws RemoteException {
         System.out.println(p.toString() + "is now on");
         return "Hello : " + p.toString();

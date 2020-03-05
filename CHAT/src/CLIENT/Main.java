@@ -59,8 +59,8 @@ public class Main extends Application {
     private void setActionButtonConnectionScreen(Stage stage){
             connectionScreen.getButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                user = new Person(connectionScreen.getPseudo(), "");
-                accueil = new Accueil(user);
+             //   user = t.loggedIn(connectionScreen.getPseudo());
+                accueil = new Accueil(user,t);
                 stage.setScene(accueil.getScene());
                 setToConnectionScreenButton(stage);
                 setToChatRoom(stage);

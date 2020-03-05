@@ -1,5 +1,6 @@
 package CLIENT;
 import BD.*;
+import SERVER.TalkWithClient;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -14,6 +15,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+import java.rmi.RemoteException;
+
 public class Chat {
     ChatRoom chatRoom;
     Person user;
@@ -23,9 +26,10 @@ public class Chat {
     Button toAccueil;
     Button send;
     TextField message;
+    TalkWithClient t;
 
-
-    public Chat(ChatRoom chatRoom, Person user){
+    public Chat(ChatRoom chatRoom, Person user, TalkWithClient t){
+        this.t = t;
         this.chatRoom = chatRoom;
         this.user = user;
         root = new BorderPane();
@@ -69,8 +73,18 @@ public class Chat {
 
     }
 
-    private void sendMSG(){
-        System.out.println(message.getText());
+    private void sendMSG()  {
+        try {
+            //t.test();
+            //System.out.println(t.sayHi(user));
+            t.sendMessage(new Message(message.getText(), user));
+        } catch (RemoteException r){
+
+            System.out.println("Problème lors de l'envoi du message\n" + r);
+            r.printStackTrace();
+        }
+
+       // System.out.println(message.getText());
         chatRoom.getMsg().add(new Message(message.getText(), user));
         message.clear();
 

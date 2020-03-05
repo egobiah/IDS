@@ -1,20 +1,27 @@
 package BD;
 
-public class Person {
+import java.io.Serializable;
+
+public class Person implements Serializable {
+
     String nom;
     String prenom;
     String password;
     String pseudo;
-    private static int compteur_id = 0;
-    int id;
+    //private static int compteur_id = 0;
+   // int id;
 
-    private final Object synch_cmp = new Object();
+   // private final Object synch_cmp = new Object();
 
-    public Person(String pseudo, String password){
+    public Person(String pseudo, String password) {
+        /*
         synchronized (synch_cmp) {
-            id = compteur_id;
+          id = compteur_id;
             compteur_id++;
         }
+
+
+         */
 
         this.password = password;
         this.pseudo = pseudo;
@@ -48,4 +55,23 @@ public class Person {
     public String toString() {
         return pseudo;
     }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+/*
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+
+ */
 }

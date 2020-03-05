@@ -2,6 +2,7 @@ package CLIENT;
 
 import BD.Person;
 
+import SERVER.TalkWithClient;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,12 +11,17 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
 public class Main extends Application {
 
+    private static TalkWithClient t;
     ConnectionScreen connectionScreen;
     Accueil accueil;
     Person user;
     Chat chat;
+
     public void start(Stage stage) {
 
         connectionScreen = new ConnectionScreen();
@@ -32,7 +38,22 @@ public class Main extends Application {
 
     public static void main(String[] args) {
 
-        launch();
+        try {
+            if (args.length < 1) {
+                System.out.println("Usage: java HelloClient <rmiregistry host>");
+                return;
+            }
+
+            String host = args[0];
+
+            // Get remote object reference
+            Registry registry = LocateRegistry.getRegistry(host);
+            t = (TalkWithClient) registry.lookup("Talk");
+
+        }  catch (Exception e)  {
+        System.err.println("Error on client: " + e);
+        }
+            launch();
     }
 
     private void setActionButtonConnectionScreen(Stage stage){
@@ -64,7 +85,7 @@ public class Main extends Application {
         accueil.getToChatRoom().setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("Need to connect to chat room : "  + accueil.getTableView().getSelectionModel().getSelectedItem().getName());
-                chat = new Chat(accueil.getTableView().getSelectionModel().getSelectedItem(), user);
+                chat = new Chat(accueil.getTableView().getSelectionModel().getSelectedItem(), user, t);
                 stage.setScene(chat.getScene());
 
                 chat.getToAccueil().setOnAction(new EventHandler<ActionEvent>() {

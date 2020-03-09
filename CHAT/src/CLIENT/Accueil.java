@@ -3,8 +3,7 @@ package CLIENT;
 import BD.*;
 
 
-import SERVER.TalkWithClient;
-import com.sun.jdi.ByteType;
+import RMI_PACKAGE.TalkWithClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

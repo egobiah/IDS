@@ -1,5 +1,7 @@
 package BD;
 
+import RMI_PACKAGE.TalkWithServer;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -9,12 +11,13 @@ public class ChatRoom implements Serializable, ChatRoomsRIghts, ChatRoomsSetting
     ArrayList<Person> admin;
     ArrayList<Person> modo;
     ArrayList<Person> viewer;
-
+    ArrayList<TalkWithServer> connected;
     Boolean open;
     Boolean visible;
     protected String name;
     protected String description;
     ArrayList<Message> msg;
+
 
 
     private static int compteur_chat = 0;
@@ -24,6 +27,7 @@ public class ChatRoom implements Serializable, ChatRoomsRIghts, ChatRoomsSetting
         admin = new ArrayList<>();
         modo = new ArrayList<>();
         viewer = new ArrayList<>();
+        connected = new ArrayList<>();
         admin.add(createur);
         viewer.add(createur);
         this.name = name;
@@ -43,6 +47,27 @@ public class ChatRoom implements Serializable, ChatRoomsRIghts, ChatRoomsSetting
 
     public ArrayList<Message> getMsg(){
         return msg;
+    }
+
+    public ArrayList<TalkWithServer> getConnected() {
+        return connected;
+    }
+
+    public void setConnected(ArrayList<TalkWithServer> connected) {
+        this.connected = connected;
+    }
+
+    public Boolean addConnected(TalkWithServer t){
+        return connected.add(t);
+    }
+
+    public Boolean rmConnected(TalkWithServer t){
+        for(TalkWithServer talkWithServer : connected){
+            if(talkWithServer.equals(t) ){
+                return connected.remove(t);
+            }
+        }
+        return false;
     }
 
     @Override

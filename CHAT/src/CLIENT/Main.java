@@ -2,13 +2,11 @@ package CLIENT;
 
 import BD.Person;
 
-import SERVER.TalkWithClient;
+import RMI_PACKAGE.TalkWithClient;
+import RMI_PACKAGE.TalkWithServer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
@@ -21,7 +19,7 @@ public class Main extends Application {
     ConnectionScreen connectionScreen;
     Accueil accueil;
     Person user;
-    Chat chat;
+    TalkWithServer chat;
 
     public void start(Stage stage) {
 
@@ -90,12 +88,21 @@ public class Main extends Application {
         accueil.getToChatRoom().setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 System.out.println("Need to connect to chat room : "  + accueil.getTableView().getSelectionModel().getSelectedItem().getName());
-                chat = new Chat(accueil.getTableView().getSelectionModel().getSelectedItem(), user, t);
-                stage.setScene(chat.getScene());
+                try {
+                    chat = new Chat(accueil.getTableView().getSelectionModel().getSelectedItem(), user, t);
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+                stage.setScene(((Chat) (chat)).getScene());
 
-                chat.getToAccueil().setOnAction(new EventHandler<ActionEvent>() {
+                ((Chat) (chat)).getToAccueil().setOnAction(new EventHandler<ActionEvent>() {
                     @Override public void handle(ActionEvent e) {
                         stage.setScene(accueil.getScene());
+                        try {
+                            t.diconnectToChatRoom(((Chat) chat).chatRoom, chat);
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
 
                     }
                 });

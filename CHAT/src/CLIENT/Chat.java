@@ -1,6 +1,7 @@
 package CLIENT;
 import BD.*;
-import SERVER.TalkWithClient;
+import RMI_PACKAGE.TalkWithClient;
+import RMI_PACKAGE.TalkWithServer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -10,15 +11,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class Chat {
+public class Chat extends UnicastRemoteObject implements TalkWithServer {
     ChatRoom chatRoom;
     Person user;
     Scene scene;
@@ -28,8 +29,9 @@ public class Chat {
     Button send;
     TextField message;
     TalkWithClient t;
+    ArrayList<Message> msgs;
 
-    public Chat(ChatRoom chatRoom, Person user, TalkWithClient t){
+    public Chat(ChatRoom chatRoom, Person user, TalkWithClient t) throws RemoteException{
         this.t = t;
         this.chatRoom = chatRoom;
         this.user = user;
@@ -54,6 +56,7 @@ public class Chat {
         root.setBottom(bottomBox);
         scene = new Scene(root, 400,400);
 
+        getAllMessage();
         send.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                sendMSG();
@@ -70,6 +73,11 @@ public class Chat {
             }
         });
 
+        try {
+            t.connectToChatRoom(chatRoom, (TalkWithServer) this);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -89,7 +97,7 @@ public class Chat {
         chatRoom.getMsg().add(new Message(message.getText(), user));
         message.clear();
 
-        refreshMSG();
+       // refreshMSG();
     };
 
     public Button getToAccueil() {
@@ -103,14 +111,6 @@ public class Chat {
     public void refreshMSG(){
         BorderPane mainB = new BorderPane();
         VBox v = new VBox();
-        ArrayList<Message> msgs;
-        try {
-            msgs = t.getMessageofChatRoom(chatRoom.getID());
-        } catch (RemoteException r){
-            r.printStackTrace();
-            System.out.println("Impossible de récupérer les messages de cette salle de chat");
-            return;
-        }
         for(Message m : msgs){
            Text t =  new Text(m.toString());
                    if(m.getOwner().getPseudo().equals(user.getPseudo())){
@@ -125,5 +125,27 @@ public class Chat {
         scrollPane.setVvalue(1.00);
 
 
+    }
+
+    void getAllMessage(){
+        try {
+            msgs = t.getMessageofChatRoom(chatRoom.getID());
+        } catch (RemoteException r){
+            r.printStackTrace();
+            System.out.println("Impossible de récupérer les messages de cette salle de chat");
+            return;
+        }
+    }
+
+    @Override
+    public void connect_to_chat_client(ChatRoom c) {
+        System.out.println("Connect to " + c.toString());
+    }
+
+    @Override
+    public void newMessage(Message m) {
+        System.out.println("Serveur m'as dis que  " + m.toString());
+        msgs.add(m);
+        // refreshMSG();
     }
 }

@@ -3,13 +3,16 @@ package SERVER;
 import BD.ChatRoom;
 import BD.Message;
 import BD.Person;
+import CLIENT.Chat;
+import RMI_PACKAGE.TalkWithClient;
+import RMI_PACKAGE.TalkWithServer;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class Talk_Implem implements TalkWithClient {
     ArrayList<ChatRoom> chatRooms;
+
     public Talk_Implem(){
         generateChatRoom();
     }
@@ -20,6 +23,10 @@ public class Talk_Implem implements TalkWithClient {
         for(ChatRoom chatRoom : chatRooms){
             if(chatRoom.getID() == chatRoomId){
                 chatRoom.getMsg().add(m);
+                for(TalkWithServer t : chatRoom.getConnected()){
+                    System.out.println("J'envoie au client");
+                    t.newMessage(m);
+                }
                 return m.toString();
             }
         }
@@ -55,6 +62,26 @@ public class Talk_Implem implements TalkWithClient {
             }
         }
         return null;
+    }
+
+    @Override
+    public Boolean connectToChatRoom(ChatRoom chatRoom, TalkWithServer talkWithServer) {
+        for(ChatRoom c : chatRooms){
+            if(c.getID() == chatRoom.getID()){
+                return c.addConnected(talkWithServer);
+            }
+        }
+       return false;
+    }
+
+    @Override
+    public Boolean diconnectToChatRoom(ChatRoom chatRoom, TalkWithServer talkWithServer) throws RemoteException {
+        for(ChatRoom c : chatRooms){
+            if(c.getID() == chatRoom.getID()){
+                return c.rmConnected(talkWithServer);
+            }
+        }
+        return false;
     }
 
     public void generateChatRoom(){

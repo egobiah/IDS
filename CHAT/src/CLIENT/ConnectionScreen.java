@@ -12,18 +12,28 @@ import javafx.scene.layout.HBox;
 public class ConnectionScreen {
     Scene scene;
     BorderPane root;
-    TextField textField;
+    TextField pseudo;
+    TextField password;
+    TextField url;
     Button button;
     ConnectionScreen(){
         root = new BorderPane();
-        scene = new Scene(root,400,40);
+        scene = new Scene(root,1000,40);
 
         Label ID = new Label("Pseudo:");
-        textField = new TextField ();
+        pseudo = new TextField ();
+
+        Label Lpassword = new Label("Mot de passe:");
+        password = new TextField ();
+
+        Label Lurl = new Label("Adresse du serveur:");
+        url = new TextField ("127.0.0.1");
+
+
         button = new Button("Se connecter");
 
         HBox hBox = new HBox();
-        hBox.getChildren().addAll(ID, textField, button);
+        hBox.getChildren().addAll(ID, pseudo, Lpassword, password, Lurl, url, button);
 
         root.setCenter(hBox);
 
@@ -32,12 +42,16 @@ public class ConnectionScreen {
 
     }
 
+    public String getUrl(){
+        return url.getText();
+    }
+
     protected Scene getScene() {
         return scene;
     }
 
     public String getPseudo(){
-        return textField.getText();
+        return pseudo.getText();
     }
 
     public Button getButton(){

@@ -37,27 +37,25 @@ public class Main extends Application {
 
     public static void main(String[] args) {
 
-        try {
-            if (args.length < 1) {
-                System.out.println("Usage: java HelloClient <rmiregistry host>");
-                return;
-            }
 
-            String host = args[0];
-
-            // Get remote object reference
-            Registry registry = LocateRegistry.getRegistry(host);
-            t = (TalkWithClient) registry.lookup("Talk");
-
-        }  catch (Exception e)  {
-        System.err.println("Error on client: " + e);
-        }
             launch();
     }
 
     private void setActionButtonConnectionScreen(Stage stage){
             connectionScreen.getButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
+
+                try {
+
+                    // Get remote object reference
+                    Registry registry = LocateRegistry.getRegistry(connectionScreen.getUrl());
+                    t = (TalkWithClient) registry.lookup("Talk");
+
+                }  catch (Exception r)  {
+                    System.err.println("Error on client: " + r);
+                }
+
+
                 try {
                     user = t.loggedIn(connectionScreen.getPseudo());
                 } catch (RemoteException r){

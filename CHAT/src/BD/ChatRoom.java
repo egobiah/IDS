@@ -1,6 +1,6 @@
 package BD;
 
-import RMI_PACKAGE.TalkWithServer;
+import RmiPackage.TalkWithServer;
 
 import java.io.Serializable;
 import java.util.ArrayList;

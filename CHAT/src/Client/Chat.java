@@ -1,7 +1,8 @@
-package CLIENT;
+package Client;
 import BD.*;
-import RMI_PACKAGE.TalkWithClient;
-import RMI_PACKAGE.TalkWithServer;
+import RmiPackage.TalkWithClient;
+import RmiPackage.TalkWithServer;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -79,6 +80,12 @@ public class Chat extends UnicastRemoteObject implements TalkWithServer {
             e.printStackTrace();
         }
 
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                refreshMSG();
+            }
+        });
 
     }
 
@@ -143,9 +150,14 @@ public class Chat extends UnicastRemoteObject implements TalkWithServer {
     }
 
     @Override
-    public void newMessage(Message m) {
-        System.out.println("Serveur m'as dis que  " + m.toString());
-        msgs.add(m);
-        // refreshMSG();
+    public void newMessage(Message message) {
+        System.out.println("Serveur m'as dis que  " + message.toString());
+        msgs.add(msgs.size(), message);
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                refreshMSG();
+            }
+          });
     }
 }

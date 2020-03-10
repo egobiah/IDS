@@ -1,7 +1,5 @@
-package RMI_PACKAGE;
-import java.lang.reflect.Array;
+package RmiPackage;
 import java.rmi.*;
-import java.util.ArrayList;
 
 import BD.*;
 

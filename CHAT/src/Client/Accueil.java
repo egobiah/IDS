@@ -1,9 +1,9 @@
-package CLIENT;
+package Client;
 
 import BD.*;
 
 
-import RMI_PACKAGE.TalkWithClient;
+import RmiPackage.TalkWithClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

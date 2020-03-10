@@ -1,7 +1,5 @@
-package CLIENT;
+package Client;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,7 +14,8 @@ public class ConnectionScreen {
     TextField password;
     TextField url;
     Button button;
-    ConnectionScreen(){
+
+    public ConnectionScreen(){
         root = new BorderPane();
         scene = new Scene(root,1000,40);
 
@@ -46,7 +45,7 @@ public class ConnectionScreen {
         return url.getText();
     }
 
-    protected Scene getScene() {
+    public Scene getScene() {
         return scene;
     }
 

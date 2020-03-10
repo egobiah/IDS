@@ -14,12 +14,14 @@ import java.util.ArrayList;
 
 public class TalkService extends UnicastRemoteObject implements TalkWithClient, Serializable, _TalkService {
     private String path;
-    ArrayList<ChatRoom> chatRooms;
+    private ArrayList<ChatRoom> chatRooms;
+    private ArrayList<Person> users;
 
     public TalkService(String path) throws RemoteException {
         super();
         this.path = path;
-        generateChatRoom();
+        this.users = new ArrayList<>();
+        this.chatRooms = new ArrayList<>();
     }
 
     @Override
@@ -44,15 +46,17 @@ public class TalkService extends UnicastRemoteObject implements TalkWithClient, 
     }
 
     @Override
-
     public String sayHi(Person p) throws RemoteException {
         System.out.println(p.toString() + "is now on");
         return "Hello : " + p.toString();
     }
 
     @Override
-    public Person loggedIn(String pseudo) {
-        return new Person(pseudo, "null");
+    public Person loggedIn(String pseudo, String pwd) {
+        Person plog = new Person(pseudo,pwd);
+        for (Person p : this.users) if(p.equals(plog)) return p;
+
+        return null;
     }
 
     @Override
@@ -89,7 +93,12 @@ public class TalkService extends UnicastRemoteObject implements TalkWithClient, 
         return false;
     }
 
-    public void generateChatRoom(){
+    private void generateUsers(){
+        this.users.add(new Person("julien", "123"));
+        this.users.add(new Person("olivier", "123"));
+    }
+
+    private void generateChatRoom(){
         Person user = new Person("Admin", "Password");
         chatRooms = new ArrayList<>();
         //  chatRooms.add( new ChatRoom("Room 1","JAVA",user));
@@ -108,17 +117,29 @@ public class TalkService extends UnicastRemoteObject implements TalkWithClient, 
      * @throws ClassNotFoundException if doesn't find class in classpath
      * @throws IOException            if file not found, print : "/!\ save files not found"
      */
-    public void boot() throws InterruptedException, ClassNotFoundException, IOException {
+    void boot() throws InterruptedException, ClassNotFoundException, IOException {
         System.out.print("Booting ");
+
 
         ObjectInputStream inputStream;
         try {
-            inputStream = new ObjectInputStream(new FileInputStream(path)); //load chatRoom
+            inputStream = new ObjectInputStream(new FileInputStream(path + "/chatRooms")); //load chatRoom
             this.chatRooms = (ArrayList<ChatRoom>) inputStream.readObject();
             inputStream.close();
 
-        } catch (IOException e) { // catch files not found exception
-            System.out.println("/!\\ save files not found");
+        } catch (IOException e) { // catch files not found exceptions
+            generateChatRoom();
+            System.out.println("/!\\ chatRooms save files not found");
+        }
+
+        try {
+            inputStream = new ObjectInputStream(new FileInputStream(path + "/users")); //load chatRoom
+            this.users = (ArrayList<Person>) inputStream.readObject();
+            inputStream.close();
+
+        } catch (IOException e) { // catch files not found exceptions
+            generateUsers();
+            System.out.println("/!\\ users save files not found");
         }
 
         for (int i = 0; i < 10; i++) {
@@ -139,11 +160,16 @@ public class TalkService extends UnicastRemoteObject implements TalkWithClient, 
      * @throws InterruptedException
      * @throws IOException          if file not found, print : "/!\ save files not found"
      */
-    public void powerOff() throws InterruptedException, IOException {
+    void powerOff() throws InterruptedException, IOException {
         System.out.print("PowerOff ");
 
-        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(path)); //save films
+        ObjectOutputStream outputStream;
+        outputStream = new ObjectOutputStream(new FileOutputStream(path + "/chatRooms"));
         outputStream.writeObject(this.chatRooms);
+
+        outputStream = new ObjectOutputStream(new FileOutputStream(path + "/users"));
+        outputStream.writeObject(this.users);
+
         outputStream.close();
 
         for (int i = 0; i < 10; i++) {

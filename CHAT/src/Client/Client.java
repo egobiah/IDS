@@ -6,8 +6,8 @@ import RmiPackage.TalkWithClient;
 import RmiPackage.TalkWithServer;
 import Server.ConfigManagerServices.ConfigManager;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.scene.control.Label;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.rmi.NotBoundException;
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import static javafx.application.Application.launch;
 
 public class Client extends Application implements _Runnable {
     private static TalkWithClient talkWithClient;
@@ -26,9 +25,7 @@ public class Client extends Application implements _Runnable {
     private static Person user;
     private static TalkWithServer chat;
 
-    /*public Client() {
-        this.run();
-    }*/
+    public Client() {}
 
     public void start(Stage stage) {
         connectionScreen = new ConnectionScreen();
@@ -41,59 +38,75 @@ public class Client extends Application implements _Runnable {
 
     private void setActionButtonConnectionScreen(Stage stage){
         this.rmiConnect();
-        connectionScreen.getButton().setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                try {
-                    user = talkWithClient.loggedIn(connectionScreen.getPseudo());
-                } catch (RemoteException r){
-                    r.printStackTrace();
-                }
-                accueil = new Accueil(user, talkWithClient);
-                stage.setScene(accueil.getScene());
-                setToConnectionScreenButton(stage);
-                setToChatRoom(stage);
-
+        connectionScreen.getButton().setOnAction(e -> {
+            try {
+                user = talkWithClient.loggedIn(connectionScreen.getPseudo(), connectionScreen.getPassword());
+            } catch (RemoteException r){
+                r.printStackTrace();
             }
+            if(user == null){
+                Label label = new Label("Unknown account");
+                Popup popup = new Popup();
+
+                // set background
+                label.setStyle(
+                        "-fx-border-color: black;" +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-width: 2px;" +
+                        "-fx-background-color: #f3edff;" +
+                        "-fx-background-color: -fx-box-border, -fx-control-inner-background;"+
+                        "-fx-background-insets: 0, 1;" +
+                        "-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0);");
+
+
+                // add the label
+                popup.getContent().add(label);
+
+                popup.setAutoHide(true);
+
+                // set size of label
+                label.setMinWidth(200);
+                label.setMinHeight(100);
+
+                popup.show(stage);
+                return;
+            }
+            accueil = new Accueil(user, talkWithClient);
+            stage.setScene(accueil.getScene());
+            setToConnectionScreenButton(stage);
+            setToChatRoom(stage);
+
         });
     }
 
 
 
     public void setToConnectionScreenButton(Stage stage){
-        accueil.getToConnectionScreen().setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                stage.setScene(connectionScreen.getScene());
-
-            }
-        });
+        accueil.getToConnectionScreen().setOnAction(e -> stage.setScene(connectionScreen.getScene()));
 
     }
 
     public void setToChatRoom(Stage stage){
-        accueil.getToChatRoom().setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                System.out.println("Need to connect to chat room : "  + accueil.getTableView().getSelectionModel().getSelectedItem().getName());
+        accueil.getToChatRoom().setOnAction(e -> {
+            System.out.println("Need to connect to chat room : "  + accueil.getTableView().getSelectionModel().getSelectedItem().getName());
+            try {
+                chat = new Chat(accueil.getTableView().getSelectionModel().getSelectedItem(), user, talkWithClient);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+            stage.setScene(((Chat) (chat)).getScene());
+
+            ((Chat) (chat)).getToAccueil().setOnAction(e1 -> {
+                stage.setScene(accueil.getScene());
                 try {
-                    chat = new Chat(accueil.getTableView().getSelectionModel().getSelectedItem(), user, talkWithClient);
+                    talkWithClient.diconnectToChatRoom(((Chat) chat).chatRoom, chat);
                 } catch (RemoteException ex) {
                     ex.printStackTrace();
                 }
-                stage.setScene(((Chat) (chat)).getScene());
 
-                ((Chat) (chat)).getToAccueil().setOnAction(new EventHandler<ActionEvent>() {
-                    @Override public void handle(ActionEvent e) {
-                        stage.setScene(accueil.getScene());
-                        try {
-                            talkWithClient.diconnectToChatRoom(((Chat) chat).chatRoom, chat);
-                        } catch (RemoteException ex) {
-                            ex.printStackTrace();
-                        }
-
-                    }
-                });
+            });
 
 
-            }
         });
 
 

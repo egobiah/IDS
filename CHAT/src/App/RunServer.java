@@ -8,7 +8,7 @@ public class RunServer {
 
     public static void main(String[] args) {
         try {
-            Server server = new Server(_Runnable.port, _Runnable.address,"ChatRoom");
+            Server server = new Server(_Runnable.port, _Runnable.address,".");
             server.run();
 
 

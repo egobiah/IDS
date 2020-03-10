@@ -1,6 +1,7 @@
 package BD;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Person implements Serializable {
 
@@ -63,7 +64,17 @@ public class Person implements Serializable {
     public void setPseudo(String pseudo) {
         this.pseudo = pseudo;
     }
-/*
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Person)) return false;
+        Person person = (Person) o;
+        return getPassword().equals(person.getPassword()) &&
+                getPseudo().equals(person.getPseudo());
+    }
+
+    /*
     public void setId(int id) {
         this.id = id;
     }

@@ -43,15 +43,14 @@ public class Server implements _Runnable {
         System.setProperty("java.security.policy", ConfigManager.getConfig("securityManagerProp"));
 
         if (System.getSecurityManager() == null) System.setSecurityManager(new RMISecurityManager());
-        this.registry.rebind(this.buildRmiAddr(ChatComponent, this.adresse), this.talkService);
-        this.talkService.boot();
 
-        /*try {
+        try {
             this.registry.rebind(this.buildRmiAddr(ChatComponent, this.adresse), this.talkService);
         } catch (RemoteException e) {
-            Logger.getGlobal().log(Level.INFO, "Server Failed to start");
+            System.out.println("Server Failed to start");
             System.exit(1);
-        }*/
+        }
+        this.talkService.boot();
         return 0;
 
     }

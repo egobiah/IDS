@@ -53,6 +53,10 @@ public class ConnectionScreen {
         return pseudo.getText();
     }
 
+    public String getPassword(){
+        return password.getText();
+    }
+
     public Button getButton(){
         return button;
     }

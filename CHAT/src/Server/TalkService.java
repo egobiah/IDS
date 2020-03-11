@@ -99,13 +99,21 @@ public class TalkService extends UnicastRemoteObject implements TalkWithClient, 
         this.users.add(new Person("olivier", "123"));
     }
 
+    /**
+     * This methode is used for set default chatRoom.
+     * Normally users should be able to create their own chatRoom. But we did not implement it.
+     *
+     * chatRooms.add is a chatRoom table that contains all the chat information. In the chatRoom Array
+     * you can find all the messages and users participating in it
+     *
+     * Each ChatRoom must have an administrator.
+     */
     private void generateChatRoom(){
         Person user = new Person("Admin", "Password");
         chatRooms = new ArrayList<>();
-        //  chatRooms.add( new ChatRoom("Room 1","JAVA",user));
-        // chatRooms.add( new ChatRoom("Room 2","C",user));
-        // chatRooms.add( new ChatRoom("Room 3","PHP",user));
-        // chatRooms.add( new ChatRoom("Room 4","Python",user));
+        chatRooms.add( new ChatRoom("Room 2","C",user));
+        chatRooms.add( new ChatRoom("Room 3","PHP",user));
+        chatRooms.add( new ChatRoom("Room 4","Python",user));
         chatRooms.add( new ChatRoom("Room 5","Rust",user));
     }
 

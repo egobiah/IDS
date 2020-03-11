@@ -24,8 +24,11 @@ public class Client extends Application implements _Runnable {
     private static Accueil accueil;
     private static Person user;
     private static TalkWithServer chat;
+    private boolean boot;
 
-    public Client() {}
+    public Client() {
+        this.boot = true;
+    }
 
     public void start(Stage stage) {
         connectionScreen = new ConnectionScreen();
@@ -33,12 +36,14 @@ public class Client extends Application implements _Runnable {
         stage.setTitle("Chat Olivier - Julien");
         stage.setScene(connectionScreen.getScene());
         stage.show();
+        this.boot = false;
     }
 
 
     private void setActionButtonConnectionScreen(Stage stage){
-        this.rmiConnect();
+        //if(!this.boot)this.rmiConnect();
         connectionScreen.getButton().setOnAction(e -> {
+            if(!this.boot)this.rmiConnect();
             try {
                 user = talkWithClient.loggedIn(connectionScreen.getPseudo(), connectionScreen.getPassword());
             } catch (RemoteException r){

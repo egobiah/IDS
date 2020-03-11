@@ -25,8 +25,8 @@ public class Server implements _Runnable {
         this.talkService = new TalkService(savedPath);
         this.port = port;
         this.adresse = address;
-        LocateRegistry.createRegistry(this.port);
-        this.registry = LocateRegistry.getRegistry(this.port);
+        LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+        this.registry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
     }
 
     /**

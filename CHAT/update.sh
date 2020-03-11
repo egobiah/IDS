@@ -47,9 +47,17 @@ EOI
 print_command() {
 	cat >> $1 <<-'EOI'
 	# Execute command
-	ADD  CHAT.jar /app/CHAT.jar
+	ADD  CHAT_jar.jar /app/CHAT_jar.jar
+	ADD  config.json /app/src/App/config.json
+	ADD  security.policy /app/src/App/security.policy
 
-	CMD ["java", "-jar","/app/CHAT.jar"]
+  EXPOSE 1099:1099
+
+  WORKDIR /app
+
+	CMD ["java", "-jar","CHAT_jar.jar","-Dweblogic.oif.serialFilterScope=weblogic", \
+	"-Dcom.sun.management.jmxremote.local.only=false","-Dcom.sun.management.jmxremote.port=1099","-Dcom.sun.management.jmxremote.rmi.port=1099",\
+	"-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false", "-Djava.rmi.server.hostname=0.0.0.0"]
 
 EOI
 } 
@@ -65,6 +73,6 @@ do
 		print_baseimage ${file};
 		print_basepackages ${file};
 		print_command ${file};
-    cp out/artifacts/CHAT_jar/CHAT.jar gen_dockerfile/${arch}/CHAT.jar
+    cp out/artifacts/CHAT_jar/CHAT_jar.jar gen_dockerfile/${arch}/CHAT_jar.jar
 		echo "done"
 done

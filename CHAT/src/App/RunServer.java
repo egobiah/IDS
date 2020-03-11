@@ -13,13 +13,13 @@ public class RunServer {
 
 
             System.out.println("Q to quit server");
-            Scanner sc = new Scanner(System.in);
+            /*Scanner sc = new Scanner(System.in); // not compatible with docker
             String command = sc.nextLine();
 
             if (command.equals("Q")) {
                 server.stop();
                 System.exit(0);
-            }
+            }*/
 
         } catch (Exception e) {
             System.err.println("Error on server :" + e);

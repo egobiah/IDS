@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public abstract class ConfigManager {
     private static String pathConfigFile =
-            "/Users/julien/Documents/M1NFO/IDS/IDS/CHAT/src/App/config.json";
+            "src/App/config.json";
 
     /**
      * Allows server and services to get config from the config.json file

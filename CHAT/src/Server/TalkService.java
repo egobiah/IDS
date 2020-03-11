@@ -9,6 +9,7 @@ import RmiPackage.TalkWithServer;
 
 import java.io.*;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ public class TalkService extends UnicastRemoteObject implements TalkWithClient, 
     private ArrayList<Person> users;
 
     public TalkService(String path) throws RemoteException {
-        super();
+        super(Registry.REGISTRY_PORT);
         this.path = path;
         this.users = new ArrayList<>();
         this.chatRooms = new ArrayList<>();

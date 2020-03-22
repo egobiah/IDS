@@ -11,8 +11,7 @@ import java.io.IOException;
  * This manager to get configuration from a json file
  */
 public abstract class ConfigManager {
-    private static String pathConfigFile =
-            "src/App/config.json";
+    private static String pathConfigFile = "App/config.json";
 
     /**
      * Allows server and services to get config from the config.json file

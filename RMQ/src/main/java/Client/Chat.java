@@ -2,14 +2,11 @@ package Client;
 import BD.*;
 import com.rabbitmq.client.*;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -65,13 +62,11 @@ public class Chat extends UnicastRemoteObject {
         scene = new Scene(root, 400,400);
 
         //getAllMessage();
-        send.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                try {
-                    sendMSG();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+        send.setOnAction(e -> {
+            try {
+                sendMSG();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         });
 
@@ -102,19 +97,7 @@ public class Chat extends UnicastRemoteObject {
 
         channel.basicConsume(this.queueName, true, deliverCallback, consumerTag -> { });
 
-
-        /*try {
-            t.connectToChatRoom(chatRoom, (TalkWithServer) this);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }*/
-
-        Platform.runLater(new Runnable(){
-            @Override
-            public void run() {
-                refreshMSG();
-            }
-        });
+        Platform.runLater(() -> refreshMSG());
 
     }
 
@@ -143,7 +126,6 @@ public class Chat extends UnicastRemoteObject {
     }
 
     public void refreshMSG(){
-        BorderPane mainB = new BorderPane();
         VBox v = new VBox();
         for(Message m : msgs){
            Text t =  new Text(m.toString());
@@ -159,20 +141,6 @@ public class Chat extends UnicastRemoteObject {
         scrollPane.setVvalue(1.00);
 
 
-    }
-
-   /* void getAllMessage(){
-        try {
-            msgs = t.getMessageofChéatRoom(chatRoom.getID());
-        } catch (RemoteException r){
-            r.printStackTrace();
-            System.out.println("Impossible de récupérer les messages de cette salle de chat");
-            return;
-        }
-    }*/
-
-    public void connect_to_chat_client(ChatRoom c) {
-        System.out.println("Connect to " + c.toString());
     }
 
     public void newMessage(Message message) {

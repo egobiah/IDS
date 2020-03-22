@@ -7,8 +7,6 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import javafx.application.Application;
-import javafx.scene.control.Label;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -16,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 
 
 public class Client extends Application implements _Runnable {
-    private static final String EXCHANGE_NAME = "CLIENT";
+    private static final String EXCHANGE_NAME = "CHAT_EXCHANGE";
 
     private static ConnectionScreen connectionScreen;
     private static Accueil accueil;
@@ -32,7 +30,7 @@ public class Client extends Application implements _Runnable {
         this.boot = true;
     }
 
-    public void start(Stage stage) throws IOException, TimeoutException {
+    public void start(Stage stage) {
         connectionScreen = new ConnectionScreen();
         setActionButtonConnectionScreen(stage);
         stage.setTitle("Chat Olivier - Julien");
@@ -44,39 +42,6 @@ public class Client extends Application implements _Runnable {
 
     private void setActionButtonConnectionScreen(Stage stage){
         connectionScreen.getButton().setOnAction(e -> {
-            /*if(!this.boot)this.rmiConnect();
-            try {
-                user = talkWithClient.loggedIn(connectionScreen.getPseudo(), connectionScreen.getPassword());
-            } catch (RemoteException r){
-                r.printStackTrace();
-            }
-            if(user == null){
-                Label label = new Label("Unknown account");
-                Popup popup = new Popup();
-
-                // set background
-                label.setStyle(
-                        "-fx-border-color: black;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-background-color: #f3edff;" +
-                        "-fx-background-color: -fx-box-border, -fx-control-inner-background;"+
-                        "-fx-background-insets: 0, 1;" +
-                        "-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0);");
-
-
-                // add the label
-                popup.getContent().add(label);
-
-                popup.setAutoHide(true);
-
-                // set size of label
-                label.setMinWidth(200);
-                label.setMinHeight(100);
-
-                popup.show(stage);
-                return;
-            }*/
             user =  new Person(connectionScreen.getPseudo(), connectionScreen.getPassword());
             accueil = new Accueil(user);
             stage.setScene(accueil.getScene());

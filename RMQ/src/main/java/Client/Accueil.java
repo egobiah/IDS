@@ -2,7 +2,6 @@ package Client;
 
 import BD.*;
 
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,7 +14,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class Accueil {

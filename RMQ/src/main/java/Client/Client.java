@@ -111,12 +111,12 @@ public class Client extends Application implements _Runnable {
 
             try {
                 this.queueName = this.channel.queueDeclare().getQueue();
-                this.channel.queueBind(queueName, EXCHANGE_NAME, "");
+                this.channel.queueBind(queueName, EXCHANGE_NAME, "chat."+ accueil.getTableView().getSelectionModel().getSelectedItem().getName());
                 chat = new Chat(accueil.getTableView().getSelectionModel().getSelectedItem(), user, this.channel, this.queueName);
             } catch (IOException | TimeoutException ex) {
                 ex.printStackTrace();
             }
-q
+
         stage.setScene(((chat)).getScene());
 
             ((chat)).getToAccueil().setOnAction(e1 -> {
@@ -126,13 +126,8 @@ q
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-
             });
-
-
         });
-
-
     }
 
     @Override

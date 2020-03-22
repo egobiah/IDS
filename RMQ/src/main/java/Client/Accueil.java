@@ -49,7 +49,7 @@ public class Accueil {
 
 
 
-        tableView = new TableView<ChatRoom>();
+        tableView = new TableView<>();
         tableView.setEditable(false);
 
         TableColumn<ChatRoom, String> chatName = new TableColumn<ChatRoom,String> ("Nom de la salle");
@@ -106,6 +106,7 @@ public class Accueil {
 
     public void refreshTable(){
         chatRooms.add(new ChatRoom("game","cool",this.user));
+        chatRooms.add(new ChatRoom("gameOver","ramerol",this.user));
         ObservableList<ChatRoom> list = FXCollections.observableArrayList();
         list.addAll(chatRooms);
         tableView.setItems(list);

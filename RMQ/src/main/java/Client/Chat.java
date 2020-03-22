@@ -42,6 +42,7 @@ public class Chat extends UnicastRemoteObject {
         this.chatRoom = chatRoom;
         this.user = user;
         this.queueName = queueName;
+        this.msgs = new ArrayList<>();
         root = new BorderPane();
         VBox topBox = new VBox();
         toAccueil = new Button("Retour");

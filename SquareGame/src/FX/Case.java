@@ -1,5 +1,5 @@
 package FX;
-
+import Class.Zone;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -9,6 +9,7 @@ import java.awt.*;
 
 public class Case extends Rectangle {
     Point p;
+    Zone z;
     Case(int x, int y, double hauteur, double largeur ){
         p = new Point(x,y);
 
@@ -36,5 +37,14 @@ public class Case extends Rectangle {
         setFill(c);
     }
 
+    public void setZone(Zone zone){
+        this.z = zone;
+        changerCouleur(z.getColor());
+    }
+    
+    public void removeZone(){
+        z = null;
+        changerCouleur(Color.WHITE);
+    }
 
 }

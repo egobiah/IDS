@@ -1,5 +1,5 @@
 package FX;
-
+import Class.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.DragEvent;
@@ -24,7 +24,7 @@ public class Grid extends Group {
     Point caseFin = new Point(0,0);
     Point debutSelection = new Point(0,0);
     Point finSelection = new Point(0,0);
-
+    Zone currentZone;
 
 
 
@@ -32,7 +32,9 @@ public class Grid extends Group {
         this.x = nbCaseLargeur;
         this.y = nbCaseHauteur;
         this.largeurCase = largeurPx / nbCaseLargeur;
+        //this.largeurCase = this.compute / nbCaseHauteur
         this.hauteurCase = hauteurPX / nbCaseHauteur;
+       // this.hauteurCase = maxHeight() / nbCaseHauteur;
         this.cases = new Case[x][y];
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
@@ -160,17 +162,14 @@ public class Grid extends Group {
 
         for(int i = minX; i <= maxX; i++){
             for(int j = minY; j <= maxY; j++){
-                cases[i][j].changerCouleur(Color.RED);
+                //cases[i][j].changerCouleur(currentZone.getColor());
+                cases[i][j].setZone(currentZone);
             }
         }
         //System.out.print("Coloriage de la zone ");
     }
 
-
-
-
-
-
-
-
+    public void setCurrentZone(Zone zone) {
+        this.currentZone = zone;
+    }
 }

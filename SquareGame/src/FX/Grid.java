@@ -6,18 +6,27 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 public class Grid extends Group {
     Case[][] cases;
+    Group zoneSelection= new Group();
+    Group grille = new Group();
+    Rectangle zone = new Rectangle();
     //int caseHauteur, int caseLargeur, int hauteurPX, int largeurPx;
     double largeurCase, hauteurCase;
     int x, y;
 
-    Point debutSel = new Point(0,0);
-    Point lastPos = new Point(0,0);
+    Point caseDebut = new Point(0,0);
+    Point caseFin = new Point(0,0);
+    Point debutSelection = new Point(0,0);
+    Point finSelection = new Point(0,0);
+
+
+
 
     Grid(int nbCaseHauteur, int nbCaseLargeur, double hauteurPX, double largeurPx) {
         this.x = nbCaseLargeur;
@@ -30,7 +39,9 @@ public class Grid extends Group {
                 cases[i][j] = new Case(i, j, this.hauteurCase, this.largeurCase);
                 cases[i][j].setOnMouseClicked(handlerCLICK);
                 cases[i][j].setOnDragDetected(handlerDetect);
-                cases[i][j].setOnMouseMoved(handlerEND);
+                cases[i][j].setOnMouseDragOver(handlerDRAGING);
+                cases[i][j].setOnMouseDragReleased(handlerEND);
+
               //  cases[i][j].setOnMouseDragOver(handlerMAJ);
               //  cases[i][j].setOnMouseDragReleased(handlerENDING);
 
@@ -38,16 +49,22 @@ public class Grid extends Group {
 
             }
         }
+
+        this.getChildren().addAll(zoneSelection,grille);
         afficherCases();
+        grille.setOpacity(0.5);
+        zoneSelection.getChildren().add(zone);
+
+
 
 
     }
 
     public void afficherCases() {
-        this.getChildren().removeAll();
+        grille.getChildren().removeAll();
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
-                this.getChildren().add(cases[i][j]);
+                grille.getChildren().add(cases[i][j]);
             }
         }
     }
@@ -58,7 +75,7 @@ public class Grid extends Group {
         @Override
         public void handle(MouseEvent event) {
             System.out.println("Cliqué sur la case : " + ((Case) event.getTarget()).getPoint());
-           // setOnMousePressed(handlerBEGIN);
+
 
         }
     };
@@ -67,22 +84,60 @@ public class Grid extends Group {
 
         @Override
         public void handle(MouseEvent event) {
-            System.out.println("Drag la case : " + ((Case) event.getTarget()).getPoint());
+            caseDebut = ((Case) event.getTarget()).getPoint();
+            System.out.println("Drag la case : " + caseDebut);
            // setOnMousePressed(handlerBEGIN);
+            ((Case) event.getTarget()).startFullDrag();
+            debutSelection = new Point((int)event.getX(), (int) event.getY());
 
         }
     };
 
+
+    EventHandler<MouseEvent> handlerDRAGING = new EventHandler<MouseEvent>() {
+
+        @Override
+        public void handle(MouseEvent event) {
+           finSelection = new Point((int)event.getX(), (int) event.getY());
+           dessinerZoneSelection(debutSelection, finSelection);
+        }
+    };
 
     EventHandler<MouseEvent> handlerEND = new EventHandler<MouseEvent>() {
 
         @Override
         public void handle(MouseEvent event) {
-            lastPos = ((Case) event.getTarget()).getPoint();
-            System.out.println(lastPos);
+            System.out.println("Finis");
+            caseFin = ((Case) event.getTarget()).getPoint();
+            System.out.println(caseFin);
+            zone.setStroke(Color.TRANSPARENT);
+            zone.setX(0);
+            zone.setY(0);
+            zone.setWidth(0);
+            zone.setHeight(0);
+
+
         }
     };
 
+   public void dessinerZoneSelection(Point p1, Point p2){
+     //  System.out.println("Je dessine");
+       int minX = Math.min((int)p1.getX(), (int) p2.getX());
+       int maxX = Math.max((int)p1.getX(), (int) p2.getX());
+
+       int minY = Math.min((int)p1.getY(), (int) p2.getY());
+       int maxY = Math.max((int)p1.getY(), (int) p2.getY());
+     //  zoneSelection.getChildren().removeAll();
+
+      // Rectangle zone = new Rectangle();
+       zone.setX(minX);
+       zone.setY(minY);
+       zone.setWidth(maxX-minX);
+       zone.setHeight(maxY-minY);
+       zone.setFill(Color.TRANSPARENT);
+       zone.setStrokeType(StrokeType.CENTERED);
+       zone.setStroke(Color.BLACK);
+    }
 
 
 

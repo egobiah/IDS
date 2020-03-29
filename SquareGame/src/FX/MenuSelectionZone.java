@@ -19,7 +19,7 @@ public class MenuSelectionZone extends Scene {
         borderPane.setCenter(grid);
         zoneManager = new ZoneManager(grid);
         borderPane.setRight(zoneManager);
-       // grid.setCurrentZone(zoneManager.getCurrentZone());
+        grid.setCurrentZone(zoneManager.getCurrentZone());
 
 
 

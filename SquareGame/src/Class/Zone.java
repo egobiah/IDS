@@ -1,16 +1,22 @@
 package Class;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 
 public class Zone {
     public String nomZone;
     public ColorPicker colorPicker;
+    EventHandler<ActionEvent> eventColorPicker;
 
     public Zone(String nom, Color c){
         this.nomZone = nom;
         this.colorPicker = new ColorPicker();
         colorPicker.setValue(c);
+
+
+
     }
 
     public String getNomZone() {
@@ -37,5 +43,9 @@ public class Zone {
     @Override
     public String toString() {
         return "Zone : "+nomZone;
+    }
+
+    public void setEventColorPicker(EventHandler<ActionEvent> eventColorPicker) {
+        colorPicker.setOnAction(eventColorPicker);
     }
 }

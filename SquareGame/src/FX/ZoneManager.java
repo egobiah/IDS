@@ -22,8 +22,10 @@ public class ZoneManager extends BorderPane {
     ToolBar toolBar;
     EventHandler<ActionEvent> eventAjouter;
     EventHandler<ActionEvent> eventSupprimer;
+    EventHandler<ActionEvent> eventColorPicker;
     Zone currentZone;
     Grid grid;
+
     ZoneManager(Grid grid) {
         super();
         this.grid = grid;
@@ -48,15 +50,27 @@ public class ZoneManager extends BorderPane {
             TablePosition<Zone, String> pos = event.getTablePosition();
             String newName = event.getNewValue();
             System.out.println("Modification en : " + newName);
+            refreshCellOnGrid(null);
 
         });
 
         TableColumn<Zone, ColorPicker> cCol = new TableColumn<Zone, ColorPicker> ("Couleur");
         cCol.setCellValueFactory(new PropertyValueFactory<>("colorPicker"));
 
+
+
         tableView.getColumns().addAll(zoneName,cCol);
+
+        eventColorPicker = new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                System.out.println("Nouvelle couleur : " + ((ColorPicker) e.getTarget()).getValue());
+                refreshCellOnGrid(null);
+            }
+        };
+
         zones = new ArrayList<Zone>();
         currentZone = new Zone("ZoneA", Color.BLUE);
+        currentZone.setEventColorPicker(eventColorPicker);
         zones.add(currentZone);
         zones.add(new Zone("ZoneB", Color.YELLOWGREEN));
 
@@ -70,13 +84,24 @@ public class ZoneManager extends BorderPane {
         eventAjouter = new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
 
-
-                zones.add(new Zone("Nouvelle Zone", Color.color(Math.random(), Math.random(), Math.random()) ));
+                currentZone = new Zone("Nouvelle Zone", Color.color(Math.random(), Math.random(), Math.random()) );
+                zones.add(currentZone);
                 refreshTable();
+
+            }
+        };
+
+        eventSupprimer= new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                Zone aDelete = zones.get(tableView.getFocusModel().getFocusedIndex());
+                zones.remove(aDelete);
+                refreshTable();
+                refreshCellOnGrid(aDelete);
             }
         };
 
         ajouter.setOnAction(eventAjouter);
+        supprimer.setOnAction(eventSupprimer);
         setTop(toolBar);
 
     }
@@ -93,4 +118,12 @@ public class ZoneManager extends BorderPane {
     public Zone getCurrentZone() {
         return currentZone;
     }
+
+    public void refreshCellOnGrid(Zone delete){
+        System.out.println("Je dois metre a jour toutes les cellules");
+        if(delete != null){
+            System.out.println("La zone " + delete + " a était supprimé");
+        }
+    }
+
 }

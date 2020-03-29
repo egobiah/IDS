@@ -41,7 +41,7 @@ public class Case extends Rectangle {
         this.z = zone;
         changerCouleur(z.getColor());
     }
-    
+
     public void removeZone(){
         z = null;
         changerCouleur(Color.WHITE);

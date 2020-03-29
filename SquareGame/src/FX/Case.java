@@ -32,6 +32,9 @@ public class Case extends Rectangle {
         return p;
     }
 
+    public void changerCouleur(Color c){
+        setFill(c);
+    }
 
 
 }

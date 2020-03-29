@@ -24,10 +24,8 @@ public class Case extends Rectangle {
     }
 
 
-    @Override
-    public String toString() {
-        return "pos : ("+p.getX()+" ; " + p.getY() + " )";
-    }
+
+
 
     public Point getPoint(){
         return p;
@@ -47,4 +45,16 @@ public class Case extends Rectangle {
         changerCouleur(Color.WHITE);
     }
 
+    public Zone getZ() {
+        return z;
+    }
+
+    public void setZ(Zone z) {
+        this.z = z;
+        changerCouleur(z.getColor());
+    }
+    @Override
+    public String toString() {
+        return "pos : ("+p.getX()+" ; " + p.getY() + " ). Zone : " + z;
+    }
 }

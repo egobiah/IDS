@@ -6,6 +6,8 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 
 public class Zone {
+    private static int compteur_id = 0;
+    int id;
     public String nomZone;
     public ColorPicker colorPicker;
     EventHandler<ActionEvent> eventColorPicker;
@@ -14,7 +16,8 @@ public class Zone {
         this.nomZone = nom;
         this.colorPicker = new ColorPicker();
         colorPicker.setValue(c);
-
+        this.id = compteur_id;
+        compteur_id++;
 
 
     }
@@ -47,5 +50,13 @@ public class Zone {
 
     public void setEventColorPicker(EventHandler<ActionEvent> eventColorPicker) {
         colorPicker.setOnAction(eventColorPicker);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

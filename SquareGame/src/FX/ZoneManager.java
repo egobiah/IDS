@@ -98,6 +98,7 @@ public class ZoneManager extends BorderPane {
             }
         };
         initialZone = new Zone("Init", Color.WHITE);
+        initialZone.setEventColorPicker(eventColorPicker);
         zones = new ArrayList<Zone>();
         currentZone = new Zone("ZoneA", Color.BLUE);
         currentZone.setEventColorPicker(eventColorPicker);
@@ -221,6 +222,18 @@ public class ZoneManager extends BorderPane {
         //toolBar = new ToolBar(print);
         //setTop(toolBar);
         grid.rmHandlerSelection();
+        //zones.add(initialZone);
+        
+        ArrayList<Zone> finalZone = new ArrayList();
+        for(int i = 0; i < grid.getX(); i++){
+            for(int j = 0; j < grid.getY(); j++){
+                if(finalZone.indexOf(grid.cases[i][j].getZ()) == -1){
+                    finalZone.add(grid.cases[i][j].getZ());
+                }
+            }
+        }
+        zones = finalZone;
+        refreshTable();
     }
 
 }

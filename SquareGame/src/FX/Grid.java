@@ -271,4 +271,8 @@ public class Grid extends Group {
         player.setCenterY(y*hauteurCase+hauteurCase/2);
    }
 
+   public void setColorCircle(Color c){
+       player.setFill(c);
+   }
+
 }

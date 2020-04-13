@@ -109,33 +109,32 @@ public class PlayerManager extends BorderPane implements Mouvement {
         TableColumn<Player, Integer> zoneY = new TableColumn<Player, Integer>("Y");
         zoneY.setCellValueFactory(new PropertyValueFactory<>("y"));
 
+        tableView.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("Selection de la table view");
+
+                currentPlayer = players.get(tableView.getFocusModel().getFocusedIndex());
+                moovPlayer();
+
+            }
+        });
+
+        TableColumn<Player, ColorPicker> cCol = new TableColumn<Player, ColorPicker> ("Couleur");
+        cCol.setCellValueFactory(new PropertyValueFactory<>("colorPicker"));
 
 
 
-
-        tableView.getColumns().addAll(zoneName, zoneId, zoneX, zoneY);
+        tableView.getColumns().addAll(zoneName, zoneId, zoneX, zoneY, cCol);
         refreshTable();
 
         deplacement = new Deplacement();
         setBottom(deplacement);
-        deplacement.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
-            boolean dep = false;
-            if(key.getCode()== KeyCode.Q) {
-                System.out.println("Déplacement gauche");
-                dep = mouvementGauche();
-            } else if(key.getCode()== KeyCode.D) {
-                System.out.println("Déplacement droite");
-                dep = mouvementDroite();
-            } else if(key.getCode()== KeyCode.Z) {
-                System.out.println("Déplacement Haut");
-                dep = mouvementHaut();
-            } else if(key.getCode()== KeyCode.S) {
-                System.out.println("Déplacement Bas");
-                dep = mouvementBas();
-            }
-            System.out.println("Déplacement : " + dep + " ; " + currentPlayer);
-           tableView.refresh();
-        });
+
+
+        deplacement.setOnKeyPressed(clavier);
+        tableView.setOnKeyPressed(clavier);
+
 
 
         deplacement.getBas().setOnAction(new EventHandler<ActionEvent>() {
@@ -166,10 +165,10 @@ public class PlayerManager extends BorderPane implements Mouvement {
 
     public void refreshTable(){
         ObservableList<Player> list = FXCollections.observableArrayList();
-        /*for(int i = 0 ; i < players.size(); i++){
+        for(int i = 0 ; i < players.size(); i++){
             list.add(players.get(i));
-        }*/
-        list.add(currentPlayer);
+        }
+
         tableView.setItems(list);
         System.out.println("check");
 
@@ -183,11 +182,12 @@ public class PlayerManager extends BorderPane implements Mouvement {
     }
 
     public void refreshCellOnGrid(Zone delete){
-        System.out.println("Refresh de ka grid");
+        System.out.println("Refresh de la grid");
     }
 
     public void moovPlayer(){
         grid.setPosCircle(currentPlayer.getX(), currentPlayer.getY());
+        grid.setColorCircle(currentPlayer.getColor());
     }
 
     @Override
@@ -234,6 +234,28 @@ public class PlayerManager extends BorderPane implements Mouvement {
         moovPlayer();
         return true;
     }
+
+    EventHandler<KeyEvent> clavier = new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent key) {
+            boolean dep = false;
+            if(key.getCode()== KeyCode.Q) {
+                System.out.println("Déplacement gauche");
+                dep = mouvementGauche();
+            } else if(key.getCode()== KeyCode.D) {
+                System.out.println("Déplacement droite");
+                dep = mouvementDroite();
+            } else if(key.getCode()== KeyCode.Z) {
+                System.out.println("Déplacement Haut");
+                dep = mouvementHaut();
+            } else if(key.getCode()== KeyCode.S) {
+                System.out.println("Déplacement Bas");
+                dep = mouvementBas();
+            }
+            System.out.println("Déplacement : " + dep + " ; " + currentPlayer);
+            tableView.refresh();
+        }
+    };
 
 
 

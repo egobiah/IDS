@@ -2,9 +2,11 @@ package FX;
 import Class.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.control.Alert;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 
@@ -26,6 +28,8 @@ public class Grid extends Group {
     Point finSelection = new Point(0,0);
     Zone currentZone;
 
+    Circle player;
+
 
 
     Grid(int nbCaseHauteur, int nbCaseLargeur, double hauteurPX, double largeurPx) {
@@ -35,30 +39,20 @@ public class Grid extends Group {
         //this.largeurCase = this.compute / nbCaseHauteur
         this.hauteurCase = hauteurPX / nbCaseHauteur;
        // this.hauteurCase = maxHeight() / nbCaseHauteur;
-        this.cases = new Case[x][y];
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                cases[i][j] = new Case(i, j, this.hauteurCase, this.largeurCase);
-                cases[i][j].setOnMouseClicked(handlerCLICK);
-                cases[i][j].setOnDragDetected(handlerDetect);
-                cases[i][j].setOnMouseDragOver(handlerDRAGING);
-                cases[i][j].setOnMouseDragReleased(handlerEND);
-                cases[i][j].setOnMousePressed(handlerPRESS);
-
-              //  cases[i][j].setOnMouseDragOver(handlerMAJ);
-              //  cases[i][j].setOnMouseDragReleased(handlerENDING);
 
 
 
-            }
-        }
+        createCell();
 
         this.getChildren().addAll(zoneSelection,grille);
         afficherCases();
         grille.setOpacity(0.5);
         zoneSelection.getChildren().add(zone);
 
-
+        player = new Circle();
+        player.setCenterX(hauteurCase/2);
+        player.setCenterY(largeurCase/2);
+        player.setRadius(Math.min(hauteurCase, largeurCase)/8*3);
 
 
     }
@@ -134,6 +128,21 @@ public class Grid extends Group {
         }
     };
 
+    EventHandler<MouseEvent> handlerShowInfoCell = new EventHandler<MouseEvent>() {
+
+        @Override
+        public void handle(MouseEvent event) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("");
+
+            alert.setContentText(((Case) event.getTarget()).toString());
+            alert.setHeaderText("Informations :");
+            alert.showAndWait();
+
+
+        }
+    };
+
    public void dessinerZoneSelection(Point p1, Point p2){
      //  System.out.println("Je dessine");
        int minX = Math.min((int)p1.getX(), (int) p2.getX());
@@ -197,7 +206,69 @@ public class Grid extends Group {
        return cases[x][y];
     }
 
+    private void handlerSelection(){
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
 
-    
+                cases[i][j].setOnMouseClicked(handlerCLICK);
+                cases[i][j].setOnDragDetected(handlerDetect);
+                cases[i][j].setOnMouseDragOver(handlerDRAGING);
+                cases[i][j].setOnMouseDragReleased(handlerEND);
+                cases[i][j].setOnMousePressed(handlerPRESS);
+
+                //  cases[i][j].setOnMouseDragOver(handlerMAJ);
+                //  cases[i][j].setOnMouseDragReleased(handlerENDING);
+
+
+
+            }
+        }
+    }
+
+    private void createCell(){
+        this.cases = new Case[x][y];
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                cases[i][j] = new Case(i, j, this.hauteurCase, this.largeurCase);
+
+            }
+        }
+        handlerSelection();
+    }
+
+    protected void rmHandlerSelection(){
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                cases[i][j].setOnMouseClicked(handlerShowInfoCell);
+                cases[i][j].setOnDragDetected(null);
+                cases[i][j].setOnMouseDragOver(null);
+                cases[i][j].setOnMouseDragReleased(null);
+                cases[i][j].setOnMousePressed(null);
+
+                //  cases[i][j].setOnMouseDragOver(handlerMAJ);
+                //  cases[i][j].setOnMouseDragReleased(handlerENDING);
+
+
+
+            }
+        }
+    }
+
+    protected void affCircle(){
+       if(!getChildren().contains(player)){
+           getChildren().add(player);
+       }
+    }
+
+    protected void unAffCircle(){
+        if(getChildren().contains(player)){
+            getChildren().remove(player);
+        }
+    }
+
+    public void setPosCircle(int x, int y){
+       player.setCenterX(x*largeurCase+largeurCase/2);
+        player.setCenterY(y*hauteurCase+hauteurCase/2);
+   }
 
 }

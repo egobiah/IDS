@@ -17,7 +17,7 @@ public class Main extends Application{
         Rectangle2D ecran = screen.getVisualBounds();
 
       //  Scene s = new Scene(grid, ecran.getWidth()/2, ecran.getHeight()/2);
-        MenuSelectionZone menuSelectionZone = new MenuSelectionZone(ecran.getWidth()/2, ecran.getHeight()/2);
+        MenuSelectionZone menuSelectionZone = new MenuSelectionZone(ecran.getWidth()/4*3, ecran.getHeight()/4*3);
         primaryStage.setTitle("SquaregGame - Julien ALAIMO - Olivier HUREAU");
         primaryStage.show();
         primaryStage.setScene(menuSelectionZone);

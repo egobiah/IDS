@@ -55,6 +55,6 @@ public class Case extends Rectangle {
     }
     @Override
     public String toString() {
-        return "pos : ("+p.getX()+" ; " + p.getY() + " ). Zone : " + z.getId();
+        return "Position : ("+p.getX()+" ; " + p.getY() + " ).\n" + z;
     }
 }

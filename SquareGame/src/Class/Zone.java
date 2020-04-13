@@ -11,6 +11,8 @@ public class Zone {
     public String nomZone;
     public ColorPicker colorPicker;
     EventHandler<ActionEvent> eventColorPicker;
+    String ip = "auto";
+    String port = "auto";
 
     public Zone(String nom, Color c){
         this.nomZone = nom;
@@ -45,7 +47,7 @@ public class Zone {
 
     @Override
     public String toString() {
-        return "Zone : "+nomZone;
+        return "Zone : "+nomZone+ " ip = " + ip + " port = " + port;
     }
 
     public void setEventColorPicker(EventHandler<ActionEvent> eventColorPicker) {
@@ -58,5 +60,21 @@ public class Zone {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
     }
 }

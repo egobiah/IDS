@@ -28,6 +28,8 @@ public class ZoneManager extends BorderPane {
     Grid grid;
     Zone initialZone;
 
+    Button launch;
+
     ZoneManager(Grid grid) {
         super();
         this.grid = grid;
@@ -52,16 +54,42 @@ public class ZoneManager extends BorderPane {
             TablePosition<Zone, String> pos = event.getTablePosition();
             String newName = event.getNewValue();
             System.out.println("Modification en : " + newName);
+            tableView.getItems().get(event.getTablePosition().getRow()).setNomZone(newName);
             refreshCellOnGrid(null);
-
         });
 
         TableColumn<Zone, ColorPicker> cCol = new TableColumn<Zone, ColorPicker> ("Couleur");
         cCol.setCellValueFactory(new PropertyValueFactory<>("colorPicker"));
 
+        TableColumn<Zone, String> zoneIP = new TableColumn<Zone, String>("Adresse IP");
+        zoneIP.setCellValueFactory(new PropertyValueFactory<>("ip"));
+
+        zoneIP.setCellFactory(TextFieldTableCell.<Zone>forTableColumn());
+        zoneIP.setOnEditCommit((TableColumn.CellEditEvent<Zone, String> event) -> {
+            //TablePosition<Zone, String> pos = event.getTablePosition();
+            String newName = event.getNewValue();
+            System.out.println("Modification en : " + newName);
+            tableView.getItems().get(event.getTablePosition().getRow()).setIp(newName);
+        });
+
+        TableColumn<Zone, String> zonePort = new TableColumn<Zone, String>("port");
+        zonePort.setCellValueFactory(new PropertyValueFactory<>("port"));
+
+        zonePort.setCellFactory(TextFieldTableCell.<Zone>forTableColumn());
+        zonePort.setOnEditCommit((TableColumn.CellEditEvent<Zone, String> event) -> {
+            //TablePosition<Zone, String> pos = event.getTablePosition();
+
+            String newName = event.getNewValue();
+            System.out.println("Modification en : " + newName);
+            tableView.getItems().get(event.getTablePosition().getRow()).setPort(newName);
 
 
-        tableView.getColumns().addAll(zoneName,cCol);
+
+        });
+
+
+
+        tableView.getColumns().addAll(zoneName,cCol, zoneIP,zonePort);
 
         eventColorPicker = new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
@@ -84,7 +112,8 @@ public class ZoneManager extends BorderPane {
         Button ajouter = new Button("+");
         Button supprimer = new Button("-");
         Button print = new Button("Imprimer zone");
-        toolBar = new ToolBar(ajouter,supprimer,print);
+        launch = new Button("Initialisation");
+        toolBar = new ToolBar(ajouter,supprimer,print, launch);
 
         eventAjouter = new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
@@ -125,9 +154,14 @@ public class ZoneManager extends BorderPane {
             }
         };
 
+
+
+
+
         ajouter.setOnAction(eventAjouter);
         supprimer.setOnAction(eventSupprimer);
         print.setOnAction(eventImprimer);
+
         setTop(toolBar);
         for(int i = 0; i < grid.getX(); i ++){
             for(int j = 0; j < grid.getX(); j ++){
@@ -135,6 +169,8 @@ public class ZoneManager extends BorderPane {
                 c.setZ(initialZone);
             }
         }
+
+
 
 
     }
@@ -173,6 +209,18 @@ public class ZoneManager extends BorderPane {
                 }
             }
         }
+    }
+
+    protected Button getLaunchButton(){
+        return launch;
+    }
+
+    void eventLaunch(){
+        System.out.println("Lancement de la fusée");
+        setTop(null);
+        //toolBar = new ToolBar(print);
+        //setTop(toolBar);
+        grid.rmHandlerSelection();
     }
 
 }

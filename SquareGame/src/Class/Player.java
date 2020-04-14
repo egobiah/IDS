@@ -38,6 +38,9 @@ public class Player {
     public Player(String name){
         this.name = name;
         colorPicker = new ColorPicker(Color.color(Math.random(), Math.random(), Math.random()));
+        this.y = y;
+        this.id = compteur_id;
+        compteur_id++;
     }
 
 

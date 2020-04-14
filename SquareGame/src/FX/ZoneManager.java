@@ -223,7 +223,7 @@ public class ZoneManager extends BorderPane {
         //setTop(toolBar);
         grid.rmHandlerSelection();
         //zones.add(initialZone);
-        
+
         ArrayList<Zone> finalZone = new ArrayList();
         for(int i = 0; i < grid.getX(); i++){
             for(int j = 0; j < grid.getY(); j++){

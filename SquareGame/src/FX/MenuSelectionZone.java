@@ -31,6 +31,7 @@ public class MenuSelectionZone extends Scene {
                 borderPane.setLeft(playerManager);
                 zoneManager.eventLaunch();
                 grid.affCircle();
+
             }
         };
 

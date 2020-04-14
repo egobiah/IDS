@@ -10,6 +10,7 @@ import java.awt.*;
 public class Case extends Rectangle {
     Point p;
     Zone z;
+
     Case(int x, int y, double hauteur, double largeur ){
         p = new Point(x,y);
 

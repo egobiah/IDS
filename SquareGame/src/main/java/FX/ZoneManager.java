@@ -234,6 +234,9 @@ public class ZoneManager extends BorderPane {
             }
         }
         zones = finalZone;
+
+
+
         refreshTable();
     }
 

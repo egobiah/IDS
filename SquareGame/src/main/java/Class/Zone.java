@@ -2,8 +2,11 @@ package Class;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
 
 public class Zone {
     private static int compteur_id = 0;
@@ -13,6 +16,8 @@ public class Zone {
     EventHandler<ActionEvent> eventColorPicker;
     String ip = "auto";
     String port = "auto";
+
+
 
     public Zone(String nom, Color c){
         this.nomZone = nom;

@@ -8,8 +8,9 @@ public class LaunchServer {
 
 
     public static void main(String[] argv) throws Exception {
-        Server server = new Server(RPC_QUEUE_NAME, argv[0]);
-        server.waitingForClient();
+        //Server server = new Server(RPC_QUEUE_NAME, argv[0]);
+        Server server = new Server(RPC_QUEUE_NAME, "Balek du nom ?");
+        //server.waitingForClient();
     }
 
 }

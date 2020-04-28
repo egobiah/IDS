@@ -55,9 +55,9 @@ public class Server {
 */
     private void initConnection() throws IOException, TimeoutException {
         this.factory = new ConnectionFactory();
-        this.factory.setHost(RmqConfig.RMQ_SERVER_IP);
+        this.factory.setHost("192.168.99.100");
         this.connection = factory.newConnection();
-        try (RPC_INIT rpcInit = new RPC_INIT(this.factory, this.RPC_INI_QUEUE_NAME )) {
+        try (RPC_INIT rpcInit = new RPC_INIT(this.connection, this.RPC_INI_QUEUE_NAME )) {
             System.out.println(" [x] Requesting Initialisation from manager");
             this.informationsServeur = rpcInit.call();
             System.out.println(" [.] Got IT");

@@ -15,14 +15,15 @@ public class RPC_INIT implements AutoCloseable {
 
     private Connection connection;
     private Channel channel;
-    private String requestQueueName = "RPC_INIT";
     InformationsServeur informationsServeur;
+    String requestQueueName;
 
-    public RPC_INIT() throws IOException, TimeoutException {
+    public RPC_INIT(String requestQueueName) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         connection = factory.newConnection();
         channel = connection.createChannel();
+        this.requestQueueName = requestQueueName;
     }
 
 

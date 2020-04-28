@@ -22,6 +22,7 @@ public class Server {
 
 
 
+
     public Server(String RPC_INI_QUEUE_NAME, String SERVER_NAME) throws IOException, TimeoutException {
         this.SERVER_NAME = SERVER_NAME;
         this.RPC_INI_QUEUE_NAME = RPC_INI_QUEUE_NAME;
@@ -53,9 +54,9 @@ public class Server {
     }
 */
     private void initConnection() throws IOException, TimeoutException {
-        try (RPC_INIT rpcInit = new RPC_INIT()) {
+        try (RPC_INIT rpcInit = new RPC_INIT(this.RPC_INI_QUEUE_NAME )) {
             System.out.println(" [x] Requesting Initialisation from manager");
-            informationsServeur = rpcInit.call();
+            this.informationsServeur = rpcInit.call();
             System.out.println(" [.] Got IT");
 
         } catch (IOException | TimeoutException | InterruptedException e) {

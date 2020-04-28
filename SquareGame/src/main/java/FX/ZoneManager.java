@@ -60,6 +60,7 @@ public class ZoneManager extends BorderPane {
 
         TableColumn<Zone, ColorPicker> cCol = new TableColumn<Zone, ColorPicker> ("Couleur");
         cCol.setCellValueFactory(new PropertyValueFactory<>("colorPicker"));
+        cCol.setMaxWidth(80);
 
         TableColumn<Zone, String> zoneIP = new TableColumn<Zone, String>("Adresse IP");
         zoneIP.setCellValueFactory(new PropertyValueFactory<>("ip"));

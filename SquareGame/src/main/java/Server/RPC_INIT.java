@@ -17,11 +17,13 @@ public class RPC_INIT implements AutoCloseable {
     private Channel channel;
     InformationsServeur informationsServeur;
     String requestQueueName;
+    String uniqueQueueServer;
 
-    public RPC_INIT(Connection connection, String requestQueueName) throws IOException, TimeoutException {
+    public RPC_INIT(Connection connection, String requestQueueName, String uniqueQueueServer) throws IOException, TimeoutException {
         this.connection = connection;
         channel = connection.createChannel();
         this.requestQueueName = requestQueueName;
+        this.uniqueQueueServer = uniqueQueueServer;
     }
 
 
@@ -35,7 +37,7 @@ public class RPC_INIT implements AutoCloseable {
                 .replyTo(replyQueueName)
                 .build();
 
-        channel.basicPublish("", requestQueueName, props, null);
+        channel.basicPublish("", requestQueueName, props,  uniqueQueueServer.getBytes("UTF-8"));
 
         final BlockingQueue<String> response = new ArrayBlockingQueue<>(1);
 

@@ -1,5 +1,6 @@
 package FX;
 
+import Server.Manager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -13,13 +14,13 @@ public class MenuSelectionZone extends Scene {
     Grid grid;
     ZoneManager zoneManager;
     PlayerManager playerManager;
-    MenuSelectionZone(double largeur, double hauteur){
+    MenuSelectionZone(double largeur, double hauteur, Manager manager){
         super(new BorderPane(),  largeur,  hauteur);
         borderPane = (BorderPane) this.getRoot();
 
         grid = new Grid(10,10,hauteur*0.95,largeur/2);
         borderPane.setCenter(grid);
-        zoneManager = new ZoneManager(grid);
+        zoneManager = new ZoneManager(grid, manager);
         playerManager = new PlayerManager(grid);
         borderPane.setRight(zoneManager);
 
@@ -31,9 +32,6 @@ public class MenuSelectionZone extends Scene {
                 borderPane.setLeft(playerManager);
                 zoneManager.eventLaunch();
                 grid.affCircle();
-                System.out.println("Coucou");
-
-
             }
         };
 

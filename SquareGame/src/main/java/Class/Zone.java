@@ -2,7 +2,7 @@ package Class;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
+
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 
@@ -16,6 +16,8 @@ public class Zone {
     EventHandler<ActionEvent> eventColorPicker;
     String ip = "auto";
     String port = "auto";
+    ArrayList<PositionGrille> positionGrille;
+
 
 
 
@@ -25,8 +27,12 @@ public class Zone {
         colorPicker.setValue(c);
         this.id = compteur_id;
         compteur_id++;
+        positionGrille = new ArrayList<>();
 
 
+    }
+    public void addCell(PositionGrille c){
+        positionGrille.add(c);
     }
 
     public String getNomZone() {

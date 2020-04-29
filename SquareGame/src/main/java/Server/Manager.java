@@ -4,8 +4,10 @@ import com.rabbitmq.client.*;
 public class Manager {
     int i = 0;
     private static final String RPC_QUEUE_NAME = "rpc_queue_init";
+    public Manager(){
 
-    public static void main(String[] argv) throws Exception {
+    }
+    public void run() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
 
@@ -28,7 +30,8 @@ public class Manager {
                 String response = "";
 
                 try {
-                   response += "Ca fonctionne";
+                    String message = new String(delivery.getBody(), "UTF-8");
+                    System.out.println("Nouveau serveur connecté avec la queue " + message);
                 } catch (RuntimeException e) {
                     System.out.println(" [.] " + e.toString());
                 } finally {
@@ -61,11 +64,11 @@ public class Manager {
             Channel channel2 = connection.createChannel();
                 channel2.exchangeDeclare("BROADCAST", "fanout");
 
-                String message = argv.length < 1 ? "All server are initialized, let's go" :
-                        String.join(" ", argv);
+                String message =  "All server are initialized, let's go";
+
 
                 channel2.basicPublish("BROADCAST", "", null, message.getBytes("UTF-8"));
-                System.out.println(" [x] Sent '" + message + "'");
+            System.out.println(" [x] Sent '" + message + "'");
         }
 
     }

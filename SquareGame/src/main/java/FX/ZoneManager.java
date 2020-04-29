@@ -1,10 +1,12 @@
 package FX;
 import Class.*;
 
+import Server.Manager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -12,6 +14,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+
 
 import java.util.ArrayList;
 
@@ -30,8 +33,10 @@ public class ZoneManager extends BorderPane {
 
     Button launch;
 
-    ZoneManager(Grid grid) {
+    Manager manager;
+    ZoneManager(Grid grid, Manager manager) {
         super();
+        this.manager = manager;
         this.grid = grid;
         tableView = new TableView<Zone>();
         tableView.setEditable(true);
@@ -228,13 +233,21 @@ public class ZoneManager extends BorderPane {
         ArrayList<Zone> finalZone = new ArrayList();
         for(int i = 0; i < grid.getX(); i++){
             for(int j = 0; j < grid.getY(); j++){
-                if(finalZone.indexOf(grid.cases[i][j].getZ()) == -1){
-                    finalZone.add(grid.cases[i][j].getZ());
+                int index = finalZone.indexOf(grid.cases[i][j].getZ());
+                if( index == -1){
+                    Zone z = grid.cases[i][j].getZ();
+                    z.addCell(new PositionGrille(i,j));
+                } else {
+                   finalZone.get(index).addCell(new PositionGrille(i,j));
                 }
             }
         }
         zones = finalZone;
+        try {
+            manager.run();
+        } catch (Exception e){
 
+        }
 
 
         refreshTable();

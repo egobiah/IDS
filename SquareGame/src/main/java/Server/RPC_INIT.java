@@ -53,6 +53,6 @@ public class RPC_INIT implements AutoCloseable {
     }
 
     public void close() throws IOException {
-        connection.close();
+       // connection.close();
     }
 }

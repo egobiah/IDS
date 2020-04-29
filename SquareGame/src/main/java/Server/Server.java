@@ -32,21 +32,7 @@ public class Server {
         this.RPC_INI_QUEUE_NAME = RPC_INI_QUEUE_NAME;
         this.clients = new ArrayList<>();
         this.initConnection();
-        this.initConnectionFANOUT();
-        this.initConnectionRPC();
 
-
-        if (initOk == false) {
-
-            synchronized (monitor) {
-                try {
-                    monitor.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                // Do only two task
-            }
-        }
         connection.close();
 
     }
@@ -56,6 +42,9 @@ public class Server {
         this.factory = new ConnectionFactory();
         this.factory.setHost("localhost");
         this.connection = factory.newConnection();
+        this.initConnectionFANOUT();
+        this.initConnectionRPC();
+        this.waitForAllServersReady();
 
     }
 
@@ -99,6 +88,22 @@ public class Server {
 
 
     }
+
+    private void waitForAllServersReady(){
+        if (initOk == false) {
+
+            synchronized (monitor) {
+                try {
+                    monitor.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // Do only two task
+            }
+        }
+    }
+
+
     private void configureWorkingQueue() throws IOException {
         this.channel = connection.createChannel();
         this.channel.queueDeclare(this.SERVER_NAME, false, false, false, null);

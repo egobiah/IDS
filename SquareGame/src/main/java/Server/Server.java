@@ -1,14 +1,9 @@
 package Server;
 import Class.InformationsServeur;
 
-import Configuration.RmqConfig;
-import FX.Case;
 import com.rabbitmq.client.*;
-import javafx.beans.binding.ObjectExpression;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class Server {
@@ -22,7 +17,7 @@ public class Server {
     private Channel work;
 
 // Propre à chaque serveur
-    String queueCom;
+    String uniqueServeurQueue;
 
 
     InformationsServeur informationsServeur;
@@ -31,7 +26,7 @@ public class Server {
     Object soloClient;
 
     final String TASK_QUEUE_NAME = "task_queue";
-    final String NEW_CLIENT_QUEUE = "new_client";
+    final String POOL_CLIENT_QUEUE = "new_client";
 
     boolean initOk = false;
 
@@ -46,10 +41,10 @@ public class Server {
 
     }
 
-    private void initWork() throws IOException, TimeoutException{
+    private void initQueuCommunication() throws IOException, TimeoutException{
         work = connection.createChannel();
-        queueCom = work.queueDeclare().getQueue();
-        System.out.println("queue declare" + queueCom);
+        uniqueServeurQueue = work.queueDeclare().getQueue();
+        System.out.println("queue declare" + uniqueServeurQueue);
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), "UTF-8");
 
@@ -63,17 +58,16 @@ public class Server {
                 work.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
             }
         };
-        work.basicConsume(queueCom, false, deliverCallback, consumerTag -> { });
+        work.basicConsume(uniqueServeurQueue, false, deliverCallback, consumerTag -> { });
 
 
     }
-    private void initCommunication() throws IOException, TimeoutException{
+    private void initCommunicationClient() throws IOException, TimeoutException{
         information = connection.createChannel();
-        information.queueDeclare(NEW_CLIENT_QUEUE, false, false, false, null);
-        information.queuePurge(NEW_CLIENT_QUEUE);
+        information.queueDeclare(POOL_CLIENT_QUEUE, false, false, false, null);
+        information.queuePurge(POOL_CLIENT_QUEUE);
 
         information.basicQos(1);
-        System.out.println(" [x] Awaiting Manager request");
 
         soloClient = new Object();
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
@@ -86,7 +80,7 @@ public class Server {
 
 
             System.out.println("New client there");
-            information.basicPublish("", delivery.getProperties().getReplyTo(), replyProps, queueCom.getBytes("UTF-8"));
+            information.basicPublish("", delivery.getProperties().getReplyTo(), replyProps, uniqueServeurQueue.getBytes("UTF-8"));
             information.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
             // RabbitMq consumer worker thread notifies the RPC server owner thread
             synchronized (soloClient) {
@@ -96,40 +90,17 @@ public class Server {
 
         };
 
-        information.basicConsume(NEW_CLIENT_QUEUE, false, deliverCallback, (consumerTag -> { }));
+        information.basicConsume(POOL_CLIENT_QUEUE, false, deliverCallback, (consumerTag -> { }));
     }
-    /*
-    private void initNewClient() throws IOException, TimeoutException{
-        this.newClient = connection.createChannel();
 
-        newClient.queueDeclare(TASK_QUEUE_NAME, true, false, false, null);
-        newClient.basicQos(1);
-        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), "UTF-8");
-
-            System.out.println(" [x] Received '" + message + "'");
-            try {
-                Thread.sleep(1000);
-                //doWork(message);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                System.out.println(" [x] Done");
-                newClient.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-            }
-        };
-        newClient.basicConsume(TASK_QUEUE_NAME, true, deliverCallback, consumerTag -> { });
-    }
-    */
     private void initConnection() throws IOException, TimeoutException {
         this.factory = new ConnectionFactory();
         this.factory.setHost("loclahost");
         this.connection = factory.newConnection();
-        this.initWork();
-        this.initCommunication();
+        this.initQueuCommunication();
+        this.initCommunicationClient();
         this.initConnectionFANOUT();
         this.initConnectionRPC();
-       // this.initNewClient();
         this.waitForAllServersReady();
 
     }
@@ -162,7 +133,7 @@ public class Server {
 
 
 
-            try (RPC_INIT rpcInit = new RPC_INIT(this.connection, this.RPC_INI_QUEUE_NAME, this.queueCom)) {
+            try (RPC_INIT rpcInit = new RPC_INIT(this.connection, this.RPC_INI_QUEUE_NAME, this.uniqueServeurQueue)) {
                 System.out.println(" [x] Requesting Initialisation from manager");
                 this.informationsServeur = rpcInit.call();
                 System.out.println(" [.] Got IT");

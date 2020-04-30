@@ -1,17 +1,14 @@
 package FX;
 import Class.*;
 
-import Server.Manager;
+import Manager.Manager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 
@@ -20,35 +17,29 @@ import java.util.ArrayList;
 
 
 public class ZoneManager extends BorderPane {
-    TableView<Zone> tableView;
-    ArrayList<Zone> zones;
-    ToolBar toolBar;
-    EventHandler<ActionEvent> eventAjouter;
-    EventHandler<ActionEvent> eventSupprimer;
-    EventHandler<ActionEvent> eventImprimer;
-    EventHandler<ActionEvent> eventColorPicker;
-    Zone currentZone;
-    Grid grid;
-    Zone initialZone;
+    private TableView<Zone> tableView;
+    private ArrayList<Zone> zones;
+    private EventHandler<ActionEvent> eventColorPicker;
+    private Zone currentZone;
+    private Grid grid;
+    private Zone initialZone;
+    private Button launch;
 
-    Button launch;
-
-    Manager manager;
+    private Manager manager;
     ZoneManager(Grid grid, Manager manager) {
         super();
+
         this.manager = manager;
         this.grid = grid;
         tableView = new TableView<Zone>();
         tableView.setEditable(true);
-        tableView.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("Selection de la table view");
 
-                currentZone = zones.get(tableView.getFocusModel().getFocusedIndex());
-                grid.setCurrentZone(currentZone);
-                System.out.println(currentZone);
-            }
+        tableView.setOnMousePressed(event -> {
+            System.out.println("Selection de la table view");
+
+            currentZone = zones.get(tableView.getFocusModel().getFocusedIndex());
+            grid.setCurrentZone(currentZone);
+            System.out.println(currentZone);
         });
 
         TableColumn<Zone, String> zoneName = new TableColumn<Zone, String>("Zone");
@@ -97,11 +88,9 @@ public class ZoneManager extends BorderPane {
 
         tableView.getColumns().addAll(zoneName,cCol, zoneIP,zonePort);
 
-        eventColorPicker = new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                System.out.println("Nouvelle couleur : " + ((ColorPicker) e.getTarget()).getValue());
-                refreshCellOnGrid(null);
-            }
+        eventColorPicker = e -> {
+            System.out.println("Nouvelle couleur : " + ((ColorPicker) e.getTarget()).getValue());
+            refreshCellOnGrid(null);
         };
         initialZone = new Zone("Init", Color.WHITE);
         initialZone.setEventColorPicker(eventColorPicker);
@@ -120,50 +109,39 @@ public class ZoneManager extends BorderPane {
         Button supprimer = new Button("-");
         Button print = new Button("Imprimer zone");
         launch = new Button("Initialisation");
-        toolBar = new ToolBar(ajouter,supprimer,print, launch);
+        ToolBar toolBar = new ToolBar(ajouter, supprimer, print, launch);
 
-        eventAjouter = new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
+        EventHandler<ActionEvent> eventAjouter = e -> {
+            currentZone = new Zone("Nouvelle Zone", Color.color(Math.random(), Math.random(), Math.random()));
+            currentZone.setEventColorPicker(eventColorPicker);
+            zones.add(currentZone);
 
-                currentZone = new Zone("Nouvelle Zone", Color.color(Math.random(), Math.random(), Math.random()) );
-                currentZone.setEventColorPicker(eventColorPicker);
-                zones.add(currentZone);
+            refreshTable();
 
-                refreshTable();
-
-            }
         };
 
-        eventSupprimer= new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                Zone aDelete = zones.get(tableView.getFocusModel().getFocusedIndex());
-                zones.remove(aDelete);
-                try {
-                    currentZone = zones.get(0);
-                } catch ( IndexOutOfBoundsException i){
-                    currentZone = initialZone;
+        EventHandler<ActionEvent> eventSupprimer = e -> {
+            Zone aDelete = zones.get(tableView.getFocusModel().getFocusedIndex());
+            zones.remove(aDelete);
+            try {
+                currentZone = zones.get(0);
+            } catch (IndexOutOfBoundsException i) {
+                currentZone = initialZone;
+            }
+            grid.setCurrentZone(currentZone);
+            refreshTable();
+            refreshCellOnGrid(aDelete);
+
+        };
+
+        EventHandler<ActionEvent> eventImprimer = e -> {
+            for (int i = 0; i < grid.getX(); i++) {
+                for (int j = 0; j < grid.getX(); j++) {
+                    System.out.println(" Case : " + grid.getCell(i, j));
                 }
-                grid.setCurrentZone(currentZone);
-                refreshTable();
-                refreshCellOnGrid(aDelete);
-
             }
+
         };
-
-        eventImprimer= new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                for(int i = 0; i < grid.getX(); i ++){
-                    for(int j = 0; j < grid.getX(); j ++){
-                       System.out.println(" Case : " + grid.getCell(i,j));
-                    }
-                }
-
-            }
-        };
-
-
-
-
 
         ajouter.setOnAction(eventAjouter);
         supprimer.setOnAction(eventSupprimer);
@@ -176,10 +154,6 @@ public class ZoneManager extends BorderPane {
                 c.setZ(initialZone);
             }
         }
-
-
-
-
     }
 
 
@@ -222,34 +196,50 @@ public class ZoneManager extends BorderPane {
         return launch;
     }
 
+    /**
+     * Button start trigger
+     * build the map and launch manager
+     */
     void eventLaunch(){
-        System.out.println("Lancement de la fusée");
+        System.out.print("Build map");
         setTop(null);
         //toolBar = new ToolBar(print);
         //setTop(toolBar);
         grid.rmHandlerSelection();
         //zones.add(initialZone);
 
+
         ArrayList<Zone> finalZone = new ArrayList();
+        Zone z = null;
         for(int i = 0; i < grid.getX(); i++){
             for(int j = 0; j < grid.getY(); j++){
                 int index = finalZone.indexOf(grid.cases[i][j].getZ());
                 if( index == -1){
-                    Zone z = grid.cases[i][j].getZ();
-                    z.addCell(new PositionGrille(i,j));
+                    z = grid.cases[i][j].getZ();
+                    z.addCell(new PositionGrille(i, j));
                 } else {
-                   finalZone.get(index).addCell(new PositionGrille(i,j));
+                    finalZone.add(z);
+                    finalZone.get(index).addCell(new PositionGrille(i, j));
                 }
             }
+            System.out.print(".");
         }
-        zones = finalZone;
+
+        System.out.println("");
+
+        this.zones = finalZone;
+        this.manager.setMap(this.zones);
+
+        for(Zone zone : finalZone){
+            System.out.println(zone.toString());
+        }
+
         try {
-            manager.run();
+            this.manager.run();
         } catch (Exception e){
-
+            System.out.println("Manager error while starting : " + e.toString());
+            System.exit(-1);
         }
-
-
         refreshTable();
     }
 

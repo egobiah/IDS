@@ -15,20 +15,20 @@ import java.util.ArrayList;
 
 public class Grid extends Group {
     Case[][] cases;
-    Group zoneSelection= new Group();
-    Group grille = new Group();
+    private Group zoneSelection= new Group();
+    private Group grille = new Group();
     Rectangle zone = new Rectangle();
     //int caseHauteur, int caseLargeur, int hauteurPX, int largeurPx;
-    double largeurCase, hauteurCase;
+    private double largeurCase, hauteurCase;
     int x, y;
 
-    Point caseDebut = new Point(0,0);
-    Point caseFin = new Point(0,0);
-    Point debutSelection = new Point(0,0);
-    Point finSelection = new Point(0,0);
-    Zone currentZone;
+    private Point caseDebut = new Point(0,0);
+    private Point caseFin = new Point(0,0);
+    private Point debutSelection = new Point(0,0);
+    private Point finSelection = new Point(0,0);
+    private Zone currentZone;
 
-    Circle player;
+    private Circle player;
 
 
 

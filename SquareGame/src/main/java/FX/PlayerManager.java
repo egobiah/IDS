@@ -61,12 +61,7 @@ public class PlayerManager extends BorderPane implements Mouvement {
             }
         };
 
-        eventSupprimer= new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-               System.out.println("Supression d'un joueur");
-
-            }
-        };
+        eventSupprimer= e -> System.out.println("Supression d'un joueur");
 
         eventImprimer= new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {

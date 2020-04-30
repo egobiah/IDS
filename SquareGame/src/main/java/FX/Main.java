@@ -1,19 +1,13 @@
 package FX;
-import Server.Manager;
+import Manager.Manager;
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.*;
-import javafx.scene.*;
 import javafx.geometry.*;
 
-import java.nio.file.attribute.GroupPrincipal;
-
 public class Main extends Application{
-    Server.Manager manager;
+    Manager manager;
     public void start(Stage primaryStage) {
-        manager = new Manager();
+        manager = new Manager(5);
         Screen screen = Screen.getPrimary();
         Rectangle2D ecran = screen.getVisualBounds();
 

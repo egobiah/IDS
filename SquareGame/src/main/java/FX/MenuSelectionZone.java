@@ -1,13 +1,10 @@
 package FX;
 
-import Server.Manager;
+import Manager.Manager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-
-import java.awt.*;
 
 public class MenuSelectionZone extends Scene {
     BorderPane borderPane;
@@ -27,12 +24,10 @@ public class MenuSelectionZone extends Scene {
         grid.setCurrentZone(zoneManager.getCurrentZone());
 
 
-        EventHandler<ActionEvent> eventLaunch= new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                borderPane.setLeft(playerManager);
-                zoneManager.eventLaunch();
-                grid.affCircle();
-            }
+        EventHandler<ActionEvent> eventLaunch= e -> {
+            borderPane.setLeft(playerManager);
+            zoneManager.eventLaunch();
+            grid.affCircle();
         };
 
        zoneManager.getLaunchButton().setOnAction(eventLaunch);

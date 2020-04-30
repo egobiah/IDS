@@ -6,7 +6,7 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class Server {
+public class Server implements Runnable{
     private String SERVER_NAME;
     private String RPC_INI_QUEUE_NAME;
     private ConnectionFactory factory;
@@ -35,10 +35,16 @@ public class Server {
     public Server(String RPC_INI_QUEUE_NAME, String SERVER_NAME) throws IOException, TimeoutException {
         this.SERVER_NAME = SERVER_NAME;
         this.RPC_INI_QUEUE_NAME = RPC_INI_QUEUE_NAME;
-        this.initConnection();
-
        // connection.close();
+    }
 
+    @Override
+    public void run() {
+        try {
+            this.initConnection();
+        } catch (IOException | TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initQueuCommunication() throws IOException, TimeoutException{
@@ -129,10 +135,6 @@ public class Server {
     }
 
     private void initConnectionRPC() throws IOException, TimeoutException {
-
-
-
-
             try (RPC_INIT rpcInit = new RPC_INIT(this.connection, this.RPC_INI_QUEUE_NAME, this.uniqueServeurQueue)) {
                 System.out.println(" [x] Requesting Initialisation from manager");
                 this.informationsServeur = rpcInit.call();
@@ -147,8 +149,7 @@ public class Server {
     }
 
     private void waitForAllServersReady(){
-        if (initOk == false) {
-
+        if (!initOk) {
             synchronized (monitor) {
                 try {
                     monitor.wait();
